@@ -2,247 +2,230 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EPS Muscu 3e - Profil de Séance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Muscu 3e - EPS</title>
     <style>
         :root {
-            --haut: #2ecc71;   /* Vert */
-            --bas: #e74c3c;    /* Rouge */
-            --tronc: #f1c40f;  /* Jaune */
-            --cardio: #3498db; /* Bleu */
-            --bg: #2c3e50;
+            --haut: #2ecc71; --bas: #e74c3c; --tronc: #f1c40f; --cardio: #3498db;
+            --bg: #1e272e; --prof: #8e44ad; --card-bg: rgba(255, 255, 255, 0.1);
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color:#fff; text-align:center; margin: 0; padding-bottom: 30px;}
-        .container { max-width:500px; margin:auto; padding:10px; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color:#fff; text-align:center; margin: 0; padding: 0; overflow-x: hidden; }
+        .container { max-width:500px; margin:auto; padding:15px; min-height: 100vh; display: flex; flex-direction: column; }
         
-        .card { 
-            background: rgba(255, 255, 255, 0.1); border-radius: 15px; 
-            padding: 15px; margin: 10px 0; border-top: 8px solid #fff;
-        }
-        
-        /* Classes de zones */
+        .card { background: var(--card-bg); border-radius: 15px; padding: 20px; margin: 10px 0; border-top: 8px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .zone-haut { border-color: var(--haut) !important; }
         .zone-bas { border-color: var(--bas) !important; }
         .zone-tronc { border-color: var(--tronc) !important; }
         .zone-cardio { border-color: var(--cardio) !important; }
 
-        select, input { 
-            width: 95%; padding: 12px; margin: 5px 0; border-radius: 8px; 
-            border: none; font-size: 16px; 
-        }
+        select, input { width: 100%; padding: 14px; margin: 8px 0; border-radius: 10px; border: none; font-size: 16px; box-sizing: border-box; }
+        button { width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; transition: transform 0.1s; }
+        button:active { transform: scale(0.98); }
         
-        button { 
-            width: 100%; padding: 15px; border-radius: 10px; border: none; 
-            font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px;
-        }
-        .btn-valider { background: #fff; color: #2c3e50; }
-        .btn-export { background: #2ecc71; color: white; margin-top: 20px; }
-
-        /* Style de l'historique avec pastilles de couleur */
-        .hist-item { 
-            background: rgba(255,255,255,0.1); margin: 5px 0; padding: 12px; 
-            border-radius: 8px; text-align: left; font-size: 14px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-left: 10px solid transparent;
-        }
-        .rm-display { font-size: 22px; font-weight: bold; margin: 10px 0; color: var(--haut); }
+        .btn-main { background: #fff; color: var(--bg); }
+        .btn-valider { background: var(--haut); color: white; }
+        .btn-prof-link { background: none; color: #7f8c8d; font-size: 12px; margin-top: auto; padding: 20px; text-decoration: underline; border:none; }
+        
+        .hist-item { background: rgba(255,255,255,0.08); margin: 8px 0; padding: 12px; border-radius: 10px; text-align: left; display: flex; justify-content: space-between; align-items: center; border-left: 8px solid; }
+        .hidden { display: none !important; }
+        .rm-badge { font-size: 24px; font-weight: bold; color: var(--haut); margin: 10px 0; }
+        
+        /* Stats Prof */
+        .admin-panel { border-color: var(--prof); border-top-width: 12px; }
+        .stat-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; text-align: left; margin: 10px 0; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🏋️ Muscu 3e</h1>
+    <h2 style="margin-top:20px;">🏋️ Musculation 3e</h2>
 
-    <div class="card" id="selection-eleve">
-        <select id="classe" onchange="genererListeEleves()">
-            <option value="">-- Classe --</option>
-            <option value="3A">3ème A</option><option value="3B">3ème B</option>
-            <option value="3C">3ème C</option><option value="3D">3ème D</option>
-        </select>
-        <select id="eleve"><option value="">-- Élève --</option></select>
-        <button onclick="chargerApp()">Commencer</button>
+    <div id="auth-screen">
+        <div class="card">
+            <h3>Identification</h3>
+            <select id="classe" onchange="majListeEleves()">
+                <option value="">-- Classe --</option>
+                <option value="3A">3ème A</option><option value="3B">3ème B</option>
+                <option value="3C">3ème C</option><option value="3D">3ème D</option>
+            </select>
+            <select id="eleve"><option value="">-- n° Élève --</option></select>
+            <button class="btn-main" onclick="entrer('eleve')">Commencer la séance</button>
+        </div>
     </div>
 
-    <div id="app" style="display:none;">
-        <div id="main-card" class="card">
-            <h3 id="titre-zone">Atelier</h3>
-            
-            <select id="exercice" onchange="majInterface()">
-                <optgroup label="💪 HAUT DU CORPS (FORCE)" data-zone="haut">
-                    <option value="Pectoraux">Pectoraux</option>
-                    <option value="Biceps">Biceps</option>
-                    <option value="Triceps">Triceps</option>
-                    <option value="Trapèzes">Trapèzes</option>
+    <div id="app-eleve" class="hidden">
+        <div class="card" id="main-card">
+            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
+                <span id="user-display" style="font-weight:bold; background:rgba(255,255,255,0.2); padding:5px 12px; border-radius:20px; font-size:14px;"></span>
+                <button onclick="quitter()" style="width:auto; padding:5px 10px; margin:0; font-size:11px; background:#444; color:#fff;">Changer d'élève</button>
+            </div>
+
+            <select id="exercice" onchange="majChamps()">
+                <optgroup label="💪 HAUT (FORCE)" data-zone="haut">
+                    <option value="Pectoraux">Pectoraux</option><option value="Biceps">Biceps</option>
+                    <option value="Triceps">Triceps</option><option value="Trapèzes">Trapèzes</option>
                 </optgroup>
-                <optgroup label="🦵 BAS DU CORPS (EXPLOSIVITÉ)" data-zone="bas">
-                    <option value="Ischios">Ischios</option>
-                    <option value="Quadriceps">Quadriceps</option>
-                    <option value="Mollets">Mollets</option>
-                    <option value="Fessiers">Fessiers</option>
+                <optgroup label="🦵 BAS (EXPLOSIVITÉ)" data-zone="bas">
+                    <option value="Ischios">Ischios</option><option value="Quadriceps">Quadriceps</option>
+                    <option value="Mollets">Mollets</option><option value="Fessiers">Fessiers</option>
                 </optgroup>
                 <optgroup label="🧘 TRONC (RÉSISTANCE)" data-zone="tronc">
-                    <option value="Abdominaux">Abdominaux (Poids de corps)</option>
-                    <option value="Obliques">Obliques (Poids de corps)</option>
-                    <option value="Gainage">Gainage (Temps)</option>
-                    <option value="Grand dorsal">Grand dorsal (Temps)</option>
+                    <option value="Abdominaux">Abdominaux (PdC)</option><option value="Obliques">Obliques (PdC)</option>
+                    <option value="Gainage">Gainage (Temps)</option><option value="Grand dorsal">Grand dorsal (Temps)</option>
                 </optgroup>
                 <optgroup label="❤️ CARDIO" data-zone="cardio">
-                    <option value="Jumping Jack">Jumping Jack</option>
-                    <option value="Mountain Climber">Mountain Climber</option>
+                    <option value="Jumping Jack">Jumping Jack</option><option value="Mountain Climber">Mountain Climber</option>
                     <option value="Burpees">Burpees</option>
                 </optgroup>
             </select>
 
             <select id="niveau">
-                <option value="1">Niveau 1</option>
-                <option value="2">Niveau 2</option>
-                <option value="3">Niveau 3</option>
+                <option value="1">Niveau 1</option><option value="2">Niveau 2</option><option value="3">Niveau 3</option>
             </select>
 
-            <div id="champs-charge">
-                <input type="number" id="charge" placeholder="Poids (kg)">
-                <input type="number" id="reps-charge" placeholder="Répétitions">
-                <div id="resultat-rm" class="rm-display">-- kg (1RM)</div>
+            <div id="div-force">
+                <input type="number" id="charge" placeholder="Poids (kg)" inputmode="decimal">
+                <input type="number" id="reps" placeholder="Répétitions" inputmode="numeric">
+                <div id="rm-val" class="rm-badge">-- kg (1RM)</div>
             </div>
-            
-            <div id="champs-poids-corps" style="display:none;">
-                <input type="number" id="reps-pc" placeholder="Nombre de répétitions">
-            </div>
-
-            <div id="champs-temps" style="display:none;">
-                <input type="number" id="temps" placeholder="Secondes (s)">
-            </div>
+            <div id="div-pc" class="hidden"><input type="number" id="reps-pc" placeholder="Répétitions" inputmode="numeric"></div>
+            <div id="div-temps" class="hidden"><input type="number" id="temps" placeholder="Secondes" inputmode="numeric"></div>
 
             <select id="ressenti">
-                <option value="facile">😄 Facile</option>
-                <option value="bien">🙂 Correct</option>
-                <option value="difficile">😫 Difficile</option>
+                <option value="facile">😄 Facile</option><option value="bien">🙂 Correct</option><option value="difficile">😫 Difficile</option>
             </select>
-
-            <button class="btn-valider" onclick="enregistrer()">Valider la série</button>
+            <button class="btn-valider" onclick="sauver()">Valider la série</button>
         </div>
 
         <div class="card">
-            <h4>📜 Historique & Équilibre</h4>
+            <h4>📜 Historique</h4>
             <div id="historique"></div>
         </div>
-
-        <button class="btn-export" onclick="exportCSV()">📤 Télécharger les résultats</button>
     </div>
+
+    <div id="app-prof" class="hidden">
+        <div class="card admin-panel">
+            <h2 style="color:var(--prof)">🎓 Espace Prof</h2>
+            <div id="stats-prof" class="stat-box"></div>
+            <button style="background:#27ae60; color:white;" onclick="exportCSV()">📤 EXPORTER TOUTES LES CLASSES</button>
+            <button style="background:#e74c3c; color:white; margin-top:20px;" onclick="reset()">🔥 EFFACER TOUTES LES DONNÉES</button>
+            <button class="btn-main" onclick="quitter()" style="margin-top:20px;">Retour</button>
+        </div>
+    </div>
+
+    <button class="btn-prof-link" onclick="ouvrirProf()">Accès Professeur</button>
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("muscu_v4")) || {};
-let currentID = "";
+let database = JSON.parse(localStorage.getItem("muscu_v7")) || {};
+let user = "";
+const PIN = "16170";
 
-const exosTemps = ["Jumping Jack", "Mountain Climber", "Burpees", "Gainage", "Grand dorsal"];
-const exosPoidsCorps = ["Abdominaux", "Obliques"];
+const listT = ["Jumping Jack", "Mountain Climber", "Burpees", "Gainage", "Grand dorsal"];
+const listPC = ["Abdominaux", "Obliques"];
 
-function genererListeEleves() {
-    const sel = document.getElementById("eleve");
-    sel.innerHTML = '<option value="">-- Élève --</option>';
+function majListeEleves() {
+    const s = document.getElementById("eleve");
+    s.innerHTML = '<option value="">-- n° Élève --</option>';
     for(let i=1; i<=29; i++) {
-        let opt = document.createElement("option");
-        opt.value = "Eleve " + i; opt.innerText = "Élève n°" + i;
-        sel.appendChild(opt);
+        let o = document.createElement("option");
+        o.value = i; o.innerText = "Élève " + i;
+        s.appendChild(o);
     }
 }
 
-function chargerApp() {
-    const cl = document.getElementById("classe").value;
-    const el = document.getElementById("eleve").value;
-    if(!cl || !el) return alert("Complète l'identification !");
-    currentID = cl + "_" + el;
-    document.getElementById("selection-eleve").style.display = "none";
-    document.getElementById("app").style.display = "block";
-    majInterface();
-    afficher();
+function entrer(m) {
+    if(m === 'eleve') {
+        const c = document.getElementById("classe").value;
+        const e = document.getElementById("eleve").value;
+        if(!c || !e) return alert("Sélectionne ta classe !");
+        user = c + "_" + e;
+        document.getElementById("auth-screen").classList.add("hidden");
+        document.getElementById("app-eleve").classList.remove("hidden");
+        document.getElementById("user-display").innerText = "👤 " + c + " - ÉLÈVE " + e;
+        majChamps();
+        afficher();
+    }
 }
 
-function majInterface() {
-    const select = document.getElementById("exercice");
-    const ex = select.value;
-    const zone = select.options[select.selectedIndex].parentNode.getAttribute('data-zone');
-    
-    document.getElementById("main-card").className = "card zone-" + zone;
-    document.getElementById("titre-zone").innerText = "Zone : " + zone.toUpperCase();
-
-    // Logique d'affichage des champs
-    document.getElementById("champs-charge").style.display = (!exosTemps.includes(ex) && !exosPoidsCorps.includes(ex)) ? "block" : "none";
-    document.getElementById("champs-poids-corps").style.display = exosPoidsCorps.includes(ex) ? "block" : "none";
-    document.getElementById("champs-temps").style.display = exosTemps.includes(ex) ? "block" : "none";
+function ouvrirProf() {
+    if(prompt("Code secret :") === PIN) {
+        document.getElementById("auth-screen").classList.add("hidden");
+        document.getElementById("app-eleve").classList.add("hidden");
+        document.getElementById("app-prof").classList.remove("hidden");
+        let n = 0; Object.values(database).forEach(v => n += v.length);
+        document.getElementById("stats-prof").innerHTML = `<b>Base de données :</b><br>Séries totales : ${n}<br>Élèves actifs : ${Object.keys(database).length}`;
+    }
 }
 
-function enregistrer() {
+function quitter() { location.reload(); }
+
+function majChamps() {
     const ex = document.getElementById("exercice").value;
-    const select = document.getElementById("exercice");
-    const zone = select.options[select.selectedIndex].parentNode.getAttribute('data-zone');
-    const niv = document.getElementById("niveau").value;
-    const res = document.getElementById("ressenti").value;
-    
-    let entry = { ex, zone, niv, res, time: new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) };
+    const z = document.getElementById("exercice").options[document.getElementById("exercice").selectedIndex].parentNode.getAttribute('data-zone');
+    document.getElementById("main-card").className = "card zone-" + z;
+    document.getElementById("div-force").className = (!listT.includes(ex) && !listPC.includes(ex)) ? "" : "hidden";
+    document.getElementById("div-pc").className = listPC.includes(ex) ? "" : "hidden";
+    document.getElementById("div-temps").className = listT.includes(ex) ? "" : "hidden";
+}
 
-    if(exosTemps.includes(ex)) {
-        let t = document.getElementById("temps").value;
-        if(!t) return alert("Indique le temps !");
-        entry.perf = t + "s";
-    } else if(exosPoidsCorps.includes(ex)) {
-        let r = document.getElementById("reps-pc").value;
-        if(!r) return alert("Indique les répétitions !");
-        entry.perf = r + " reps (PdC)";
+function sauver() {
+    const ex = document.getElementById("exercice").value;
+    const z = document.getElementById("exercice").options[document.getElementById("exercice").selectedIndex].parentNode.getAttribute('data-zone');
+    const n = document.getElementById("niveau").value;
+    const r = document.getElementById("ressenti").value;
+    let entry = { ex, z, n, r, d: new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) };
+
+    if(listT.includes(ex)) {
+        entry.p = document.getElementById("temps").value + "s";
+    } else if(listPC.includes(ex)) {
+        entry.p = document.getElementById("reps-pc").value + " reps";
     } else {
         const c = Number(document.getElementById("charge").value);
-        const r = Number(document.getElementById("reps-charge").value);
-        if(!c || !r) return alert("Indique charge et répétitions !");
-        const rm = Math.round(c / (1.0278 - (0.0278 * r)));
-        entry.perf = c + "kg x " + r;
+        const rp = Number(document.getElementById("reps").value);
+        if(!c || !rp) return alert("Remplis les champs !");
+        const rm = Math.round(c / (1.0278 - (0.0278 * rp)));
+        entry.p = c + "kg x " + rp;
         entry.rm = rm;
-        document.getElementById("resultat-rm").innerText = rm + " kg (1RM)";
+        document.getElementById("rm-val").innerText = rm + " kg (1RM)";
     }
 
-    if(!data[currentID]) data[currentID] = [];
-    data[currentID].push(entry);
-    localStorage.setItem("muscu_v4", JSON.stringify(data));
+    if(!database[user]) database[user] = [];
+    database[user].push(entry);
+    localStorage.setItem("muscu_v7", JSON.stringify(database));
+    
+    document.querySelectorAll('input').forEach(i => i.value = "");
     afficher();
 }
 
 function afficher() {
-    const container = document.getElementById("historique");
-    container.innerHTML = "";
-    if(!data[currentID]) return;
-
-    data[currentID].slice().reverse().forEach(s => {
-        const div = document.createElement("div");
-        div.className = "hist-item";
-        // Application de la couleur de zone sur la bordure gauche
-        div.style.borderLeftColor = `var(--${s.zone})`;
-        
-        const detailRM = s.rm ? ` | RM: ${s.rm}kg` : "";
-        div.innerHTML = `
-            <div>
-                <small style="color:var(--${s.zone})">● ${s.zone.toUpperCase()}</small><br>
-                <strong>${s.ex}</strong> (Niv.${s.niv})<br>
-                ${s.perf}${detailRM}
-            </div>
-            <div style="font-size:20px;">${s.res == 'facile' ? '😄' : s.res == 'bien' ? '🙂' : '😫'}</div>
-        `;
-        container.appendChild(div);
+    const h = document.getElementById("historique");
+    h.innerHTML = "";
+    if(!database[user]) return;
+    database[user].slice().reverse().forEach(s => {
+        const d = document.createElement("div");
+        d.className = "hist-item";
+        d.style.borderLeftColor = `var(--${s.z})`;
+        d.innerHTML = `<div><b>${s.ex}</b> (Niv.${s.n})<br>${s.p}${s.rm ? ' | RM: '+s.rm+'kg' : ''}</div><span>${s.r=='facile'?'😄':s.r=='bien'?'🙂':'😫'}</span>`;
+        h.appendChild(d);
     });
 }
 
 function exportCSV() {
-    let csv = "Classe,Eleve,Heure,Zone,Exercice,Niveau,Performance,RM_Estime,Ressenti\n";
-    for(let id in data) {
+    let c = "Classe,Eleve,Heure,Zone,Exercice,Niveau,Perf,1RM,Ressenti\n";
+    for(let id in database) {
         let [cl, el] = id.split("_");
-        data[id].forEach(s => {
-            csv += `${cl},${el},${s.time},${s.zone},${s.ex},${s.niv},${s.perf},${s.rm || "N/A"},${s.res}\n`;
-        });
+        database[id].forEach(s => { c += `${cl},${el},${s.d},${s.z},${s.ex},${s.n},${s.p},${s.rm || ""},${s.r}\n`; });
     }
-    const blob = new Blob(["\ufeff" + csv], {type: 'text/csv;charset=utf-8'});
+    const b = new Blob(["\ufeff"+c], {type: 'text/csv'});
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `Synthese_Muscu_3e.csv`;
+    a.href = URL.createObjectURL(b);
+    a.download = "Bilans_Muscu.csv";
     a.click();
+}
+
+function reset() {
+    if(confirm("Tout effacer ?")) { localStorage.removeItem("muscu_v7"); location.reload(); }
 }
 </script>
 </body>
