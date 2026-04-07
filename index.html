@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EPS Muscu 3e - Profil de Séance</title>
+    <style>
+        :root {
+            --haut: #2ecc71;   /* Vert */
+            --bas: #e74c3c;    /* Rouge */
+            --tronc: #f1c40f;  /* Jaune */
+            --cardio: #3498db; /* Bleu */
+            --bg: #2c3e50;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color:#fff; text-align:center; margin: 0; padding-bottom: 30px;}
+        .container { max-width:500px; margin:auto; padding:10px; }
+        
+        .card { 
+            background: rgba(255, 255, 255, 0.1); border-radius: 15px; 
+            padding: 15px; margin: 10px 0; border-top: 8px solid #fff;
+        }
+        
+        /* Classes de zones */
+        .zone-haut { border-color: var(--haut) !important; }
+        .zone-bas { border-color: var(--bas) !important; }
+        .zone-tronc { border-color: var(--tronc) !important; }
+        .zone-cardio { border-color: var(--cardio) !important; }
+
+        select, input { 
+            width: 95%; padding: 12px; margin: 5px 0; border-radius: 8px; 
+            border: none; font-size: 16px; 
+        }
+        
+        button { 
+            width: 100%; padding: 15px; border-radius: 10px; border: none; 
+            font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px;
+        }
+        .btn-valider { background: #fff; color: #2c3e50; }
+        .btn-export { background: #2ecc71; color: white; margin-top: 20px; }
+
+        /* Style de l'historique avec pastilles de couleur */
+        .hist-item { 
+            background: rgba(255,255,255,0.1); margin: 5px 0; padding: 12px; 
+            border-radius: 8px; text-align: left; font-size: 14px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-left: 10px solid transparent;
+        }
+        .rm-display { font-size: 22px; font-weight: bold; margin: 10px 0; color: var(--haut); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏋️ Muscu 3e</h1>
+
+    <div class="card" id="selection-eleve">
+        <select id="classe" onchange="genererListeEleves()">
+            <option value="">-- Classe --</option>
+            <option value="3A">3ème A</option><option value="3B">3ème B</option>
+            <option value="3C">3ème C</option><option value="3D">3ème D</option>
+        </select>
+        <select id="eleve"><option value="">-- Élève --</option></select>
+        <button onclick="chargerApp()">Commencer</button>
+    </div>
+
+    <div id="app" style="display:none;">
+        <div id="main-card" class="card">
+            <h3 id="titre-zone">Atelier</h3>
+            
+            <select id="exercice" onchange="majInterface()">
+                <optgroup label="💪 HAUT DU CORPS (FORCE)" data-zone="haut">
+                    <option value="Pectoraux">Pectoraux</option>
+                    <option value="Biceps">Biceps</option>
+                    <option value="Triceps">Triceps</option>
+                    <option value="Trapèzes">Trapèzes</option>
+                </optgroup>
+                <optgroup label="🦵 BAS DU CORPS (EXPLOSIVITÉ)" data-zone="bas">
+                    <option value="Ischios">Ischios</option>
+                    <option value="Quadriceps">Quadriceps</option>
+                    <option value="Mollets">Mollets</option>
+                    <option value="Fessiers">Fessiers</option>
+                </optgroup>
+                <optgroup label="🧘 TRONC (RÉSISTANCE)" data-zone="tronc">
+                    <option value="Abdominaux">Abdominaux (Poids de corps)</option>
+                    <option value="Obliques">Obliques (Poids de corps)</option>
+                    <option value="Gainage">Gainage (Temps)</option>
+                    <option value="Grand dorsal">Grand dorsal (Temps)</option>
+                </optgroup>
+                <optgroup label="❤️ CARDIO" data-zone="cardio">
+                    <option value="Jumping Jack">Jumping Jack</option>
+                    <option value="Mountain Climber">Mountain Climber</option>
+                    <option value="Burpees">Burpees</option>
+                </optgroup>
+            </select>
+
+            <select id="niveau">
+                <option value="1">Niveau 1</option>
+                <option value="2">Niveau 2</option>
+                <option value="3">Niveau 3</option>
+            </select>
+
+            <div id="champs-charge">
+                <input type="number" id="charge" placeholder="Poids (kg)">
+                <input type="number" id="reps-charge" placeholder="Répétitions">
+                <div id="resultat-rm" class="rm-display">-- kg (1RM)</div>
+            </div>
+            
+            <div id="champs-poids-corps" style="display:none;">
+                <input type="number" id="reps-pc" placeholder="Nombre de répétitions">
+            </div>
+
+            <div id="champs-temps" style="display:none;">
+                <input type="number" id="temps" placeholder="Secondes (s)">
+            </div>
+
+            <select id="ressenti">
+                <option value="facile">😄 Facile</option>
+                <option value="bien">🙂 Correct</option>
+                <option value="difficile">😫 Difficile</option>
+            </select>
+
+            <button class="btn-valider" onclick="enregistrer()">Valider la série</button>
+        </div>
+
+        <div class="card">
+            <h4>📜 Historique & Équilibre</h4>
+            <div id="historique"></div>
+        </div>
+
+        <button class="btn-export" onclick="exportCSV()">📤 Télécharger les résultats</button>
+    </div>
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("muscu_v4")) || {};
+let currentID = "";
+
+const exosTemps = ["Jumping Jack", "Mountain Climber", "Burpees", "Gainage", "Grand dorsal"];
+const exosPoidsCorps = ["Abdominaux", "Obliques"];
+
+function genererListeEleves() {
+    const sel = document.getElementById("eleve");
+    sel.innerHTML = '<option value="">-- Élève --</option>';
+    for(let i=1; i<=29; i++) {
+        let opt = document.createElement("option");
+        opt.value = "Eleve " + i; opt.innerText = "Élève n°" + i;
+        sel.appendChild(opt);
+    }
+}
+
+function chargerApp() {
+    const cl = document.getElementById("classe").value;
+    const el = document.getElementById("eleve").value;
+    if(!cl || !el) return alert("Complète l'identification !");
+    currentID = cl + "_" + el;
+    document.getElementById("selection-eleve").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    majInterface();
+    afficher();
+}
+
+function majInterface() {
+    const select = document.getElementById("exercice");
+    const ex = select.value;
+    const zone = select.options[select.selectedIndex].parentNode.getAttribute('data-zone');
+    
+    document.getElementById("main-card").className = "card zone-" + zone;
+    document.getElementById("titre-zone").innerText = "Zone : " + zone.toUpperCase();
+
+    // Logique d'affichage des champs
+    document.getElementById("champs-charge").style.display = (!exosTemps.includes(ex) && !exosPoidsCorps.includes(ex)) ? "block" : "none";
+    document.getElementById("champs-poids-corps").style.display = exosPoidsCorps.includes(ex) ? "block" : "none";
+    document.getElementById("champs-temps").style.display = exosTemps.includes(ex) ? "block" : "none";
+}
+
+function enregistrer() {
+    const ex = document.getElementById("exercice").value;
+    const select = document.getElementById("exercice");
+    const zone = select.options[select.selectedIndex].parentNode.getAttribute('data-zone');
+    const niv = document.getElementById("niveau").value;
+    const res = document.getElementById("ressenti").value;
+    
+    let entry = { ex, zone, niv, res, time: new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) };
+
+    if(exosTemps.includes(ex)) {
+        let t = document.getElementById("temps").value;
+        if(!t) return alert("Indique le temps !");
+        entry.perf = t + "s";
+    } else if(exosPoidsCorps.includes(ex)) {
+        let r = document.getElementById("reps-pc").value;
+        if(!r) return alert("Indique les répétitions !");
+        entry.perf = r + " reps (PdC)";
+    } else {
+        const c = Number(document.getElementById("charge").value);
+        const r = Number(document.getElementById("reps-charge").value);
+        if(!c || !r) return alert("Indique charge et répétitions !");
+        const rm = Math.round(c / (1.0278 - (0.0278 * r)));
+        entry.perf = c + "kg x " + r;
+        entry.rm = rm;
+        document.getElementById("resultat-rm").innerText = rm + " kg (1RM)";
+    }
+
+    if(!data[currentID]) data[currentID] = [];
+    data[currentID].push(entry);
+    localStorage.setItem("muscu_v4", JSON.stringify(data));
+    afficher();
+}
+
+function afficher() {
+    const container = document.getElementById("historique");
+    container.innerHTML = "";
+    if(!data[currentID]) return;
+
+    data[currentID].slice().reverse().forEach(s => {
+        const div = document.createElement("div");
+        div.className = "hist-item";
+        // Application de la couleur de zone sur la bordure gauche
+        div.style.borderLeftColor = `var(--${s.zone})`;
+        
+        const detailRM = s.rm ? ` | RM: ${s.rm}kg` : "";
+        div.innerHTML = `
+            <div>
+                <small style="color:var(--${s.zone})">● ${s.zone.toUpperCase()}</small><br>
+                <strong>${s.ex}</strong> (Niv.${s.niv})<br>
+                ${s.perf}${detailRM}
+            </div>
+            <div style="font-size:20px;">${s.res == 'facile' ? '😄' : s.res == 'bien' ? '🙂' : '😫'}</div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function exportCSV() {
+    let csv = "Classe,Eleve,Heure,Zone,Exercice,Niveau,Performance,RM_Estime,Ressenti\n";
+    for(let id in data) {
+        let [cl, el] = id.split("_");
+        data[id].forEach(s => {
+            csv += `${cl},${el},${s.time},${s.zone},${s.ex},${s.niv},${s.perf},${s.rm || "N/A"},${s.res}\n`;
+        });
+    }
+    const blob = new Blob(["\ufeff" + csv], {type: 'text/csv;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `Synthese_Muscu_3e.csv`;
+    a.click();
+}
+</script>
+</body>
+</html>
