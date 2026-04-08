@@ -96,7 +96,6 @@
             transition: border-color .2s;
             appearance: none;
         }
-        input:focus, select:focus, textarea:focus { border-color: rgba(255,255,255,0.3); }
 
         button {
             width: 100%;
@@ -108,8 +107,7 @@
             margin-top: 8px;
             font-size: 15px;
             font-family: 'DM Sans', sans-serif;
-            letter-spacing: .03em;
-            transition: transform .12s, opacity .12s, box-shadow .2s;
+            transition: transform .12s, opacity .12s;
         }
         button:active { transform: scale(.97); opacity: .9; }
         .btn-primary { background: var(--haut); color: #000; }
@@ -118,44 +116,32 @@
         .btn-prof    { background: var(--prof); color: #fff; }
 
         table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
-        th { background: var(--surface2); color: var(--muted); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; padding: 8px 6px; text-align: center; }
+        th { background: var(--surface2); color: var(--muted); font-size: 10px; padding: 8px 6px; text-align: center; }
         td { border-bottom: 1px solid var(--border); padding: 9px 6px; text-align: center; color: #ccc; }
         tr.done td { color: var(--text); }
-        tr.done td:nth-child(3) { color: var(--haut); font-weight: 700; }
 
         .progress-wrap { background: var(--surface2); border-radius: 8px; height: 6px; margin: 6px 0 12px; overflow: hidden; }
-        .progress-bar  { height: 100%; background: var(--haut); border-radius: 8px; transition: width .5s cubic-bezier(.4,0,.2,1); }
+        .progress-bar  { height: 100%; background: var(--haut); border-radius: 8px; transition: width .5s; }
 
         .rm-feedback { background: var(--surface2); border-radius: 10px; padding: 10px 14px; font-size: 13px; margin-top: 8px; border-left: 3px solid var(--haut); display: none; }
 
-        .live-feed { max-height: 220px; overflow-y: auto; background: #000; padding: 10px 14px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 11px; }
+        .live-feed { max-height: 250px; overflow-y: auto; background: #000; padding: 10px 14px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 11px; color: #00e676; border: 1px solid #222; }
+        .live-entry { padding: 4px 0; border-bottom: 1px solid #111; }
 
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 1999; display: flex; align-items: center; justify-content: center; padding: 16px; }
-        .modal-overlay.hidden { display: none !important; }
-        .modal-box { background: #fff; color: #1a1a1a; border-radius: 18px; padding: 22px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
-        .modal-box h3 { font-family: 'Bebas Neue'; font-size: 1.5em; margin: 0 0 14px; color: var(--prof); }
-        .bilan-box { background: #f5f5f5; border: 1px dashed #ccc; border-radius: 8px; padding: 12px; font-family: 'Courier New', monospace; font-size: 12px; white-space: pre-wrap; color: #222; margin-bottom: 14px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 1999; display: flex; align-items: center; justify-content: center; padding: 16px; }
+        .modal-box { background: #fff; color: #1a1a1a; border-radius: 18px; padding: 22px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
         
-        .chart-container { width: 100%; max-width: 280px; margin: 0 auto 15px; }
-
-        .success-screen { text-align: center; padding: 30px 20px; }
-        .success-icon { font-size: 64px; display: block; margin-bottom: 12px; animation: pop .4s cubic-bezier(.175,.885,.32,1.275); }
-        @keyframes pop { from{transform:scale(.3);opacity:0} to{transform:scale(1);opacity:1} }
-        
-        .validation-msg { font-size: 12px; padding: 6px 10px; border-radius: 8px; margin-top: 6px; display: none; }
-        .validation-msg.error { background: rgba(255,23,68,.15); color: #ff6b8a; display: block; }
-
         .hidden { display: none !important; }
         .row { display: flex; gap: 8px; }
         .row > * { flex: 1; }
 
-        .zone-counters { display:flex; gap:8px; margin:10px 0; flex-wrap:wrap; }
-        .zone-counter { flex:1; min-width:60px; background:var(--surface2); border-radius:10px; padding:8px; text-align:center; border:1px solid var(--border); }
-        .zone-counter .zc-num { font-family:'Bebas Neue'; font-size:1.6em; line-height:1; }
-        .zone-counter .zc-lbl { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+        .zone-counters { display:flex; gap:8px; margin:10px 0; }
+        .zone-counter { flex:1; background:var(--surface2); border-radius:10px; padding:8px; text-align:center; border:1px solid var(--border); }
+        .zc-num { font-family:'Bebas Neue'; font-size:1.6em; line-height:1; }
+        .zc-lbl { font-size:9px; color:var(--muted); text-transform:uppercase; }
 
-        #main-title { font-family: 'Bebas Neue', sans-serif; font-size: 2em; letter-spacing: .08em; margin: 16px 0 4px; color: var(--text); }
-        .admin-link { font-size: 11px; color: #333; margin-top: 60px; cursor: pointer; text-align: center; border: 1px solid #2a2a2a; padding: 8px; width: 160px; margin-left: auto; margin-right: auto; border-radius: 6px; display: block; }
+        #main-title { font-family: 'Bebas Neue', sans-serif; font-size: 2em; letter-spacing: .08em; margin: 16px 0 4px; }
+        .admin-link { font-size: 11px; color: #333; margin-top: 60px; cursor: pointer; text-align: center; display: block; }
     </style>
 </head>
 <body>
@@ -235,16 +221,16 @@
             <div id="f-alt" class="hidden">
                 <input type="number" id="val-alt" placeholder="Reps ou Secondes" inputmode="numeric">
             </div>
-        
+
             <div id="f-elastique" class="hidden">
                 <p style="font-size:12px; color:var(--muted); margin:6px 0;">Couleur de l'élastique :</p>
                 <div style="display:flex; gap:6px; margin-bottom:10px;">
-                    <div id="el-vert"   style="flex:1; padding:10px; border-radius:8px; background:#27ae60; color:#fff; text-align:center; font-weight:700; cursor:pointer;" onclick="selectElastique('Vert')">Vert</div>
-                    <div id="el-rouge"  style="flex:1; padding:10px; border-radius:8px; background:#e74c3c; color:#fff; text-align:center; font-weight:700; cursor:pointer;" onclick="selectElastique('Rouge')">Rouge</div>
-                    <div id="el-noir"   style="flex:1; padding:10px; border-radius:8px; background:#2c2c2c; color:#fff; text-align:center; font-weight:700; cursor:pointer;" onclick="selectElastique('Noir')">Noir</div>
+                    <div id="el-Vert" style="flex:1; padding:10px; border-radius:8px; background:#27ae60; color:#fff; text-align:center; font-weight:700; cursor:pointer;" onclick="selectElastique('Vert')">Vert</div>
+                    <div id="el-Rouge" style="flex:1; padding:10px; border-radius:8px; background:#e74c3c; color:#fff; text-align:center; font-weight:700; cursor:pointer;" onclick="selectElastique('Rouge')">Rouge</div>
+                    <div id="el-Noir" style="flex:1; padding:10px; border-radius:8px; background:#2c2c2c; color:#fff; text-align:center; font-weight:700; cursor:pointer;" onclick="selectElastique('Noir')">Noir</div>
                 </div>
                 <input type="hidden" id="val-elastique">
-                <input type="number" id="reps-el" placeholder="Nombre de répétitions" inputmode="numeric">
+                <input type="number" id="reps-el" placeholder="Répétitions" inputmode="numeric">
             </div>
 
             <select id="ressenti">
@@ -254,60 +240,49 @@
                 <option value="😫">😫 Difficile</option>
             </select>
 
-            <div id="input-error" class="validation-msg error"></div>
             <div class="rm-feedback" id="rm-feedback"></div>
             <button class="btn-primary" onclick="sauverSérie()">✅ Valider l'atelier</button>
         </div>
 
         <div class="card">
-            <h4>📊 Mon Tableau</h4>
+            <h4>📊 Mes Performances</h4>
             <table>
-                <thead><tr><th>Z</th><th>Atelier</th><th>Exercice</th><th>Perf.</th><th>1RM</th><th>😊</th></tr></thead>
+                <thead><tr><th>Atelier</th><th>Exercice</th><th>Perf.</th><th>1RM</th><th>😊</th></tr></thead>
                 <tbody id="table-body"></tbody>
             </table>
-            <button onclick="genererBilanVisuel(false)" class="btn-ghost" style="margin-top:14px;">🔍 Bilan Visuel / Radar</button>
-            <button onclick="ouvrirBilanFinal()" class="btn-primary">📤 Envoyer au prof</button>
+            <button onclick="ouvrirBilanFinal()" class="btn-prof" style="margin-top:15px;">📤 Envoyer le bilan final</button>
         </div>
     </div>
 
     <div id="app-prof" class="hidden">
         <div class="card" style="border-top-color: var(--prof);">
             <h3>🎓 Espace Professeur</h3>
-            <input type="text" id="lesson-input" placeholder="Titre de la leçon">
+            <input type="text" id="lesson-input" placeholder="Nom de la séance (ex: Séance 1)">
             <div class="row">
-                <button class="btn-prof" onclick="setSession(true)">▶ Démarrer</button>
-                <button class="btn-danger" onclick="setSession(false)">■ Stopper</button>
+                <button class="btn-prof" onclick="setSession(true)">▶ Démarrer la séance</button>
+                <button class="btn-danger" onclick="setSession(false)">■ Arrêter</button>
             </div>
-            <div id="live-feed" class="live-feed" style="margin-top:20px;"></div>
-            <button onclick="location.reload()" class="btn-ghost" style="margin-top:20px;">← Retour</button>
+            <h4 style="margin-top:20px;">📢 Flux en direct</h4>
+            <div id="live-feed" class="live-feed"></div>
+            <button onclick="location.reload()" class="btn-ghost" style="margin-top:20px;">Retour Écran Élève</button>
         </div>
     </div>
 
-    <span class="admin-link" onclick="accessProf()">Administration Prof</span>
+    <span class="admin-link" onclick="accessProf()">Accès Professeur</span>
 </div>
 
-<div id="modal-overlay" class="modal-overlay hidden" onclick="if(event.target.id==='modal-overlay') fermerModal()">
+<div id="modal-overlay" class="modal-overlay hidden">
     <div class="modal-box">
-        <div id="success-view" class="success-screen hidden">
-            <span class="success-icon">✅</span>
-            <h2>Séance envoyée !</h2>
-            <button style="background:var(--prof); color:#fff; margin-top:16px;" onclick="location.reload()">Terminer</button>
-        </div>
-
-        <div id="bilan-view">
-            <h3 id="modal-title">Mon Bilan</h3>
-            <div class="chart-container"><canvas id="radarChart"></canvas></div>
-            <div id="bilan-visual-area" class="bilan-box"></div>
-            <div id="reflexive-area">
-                <textarea id="bilan-texte" rows="3" placeholder="Note ton bilan de la leçon d'aujourd'hui"></textarea>
-                <button onclick="confirmerEnvoi()" style="background:var(--prof); color:#fff;">Confirmer l'envoi</button>
-            </div>
-            <button onclick="fermerModal()" style="background:#eee; color:#333; margin-top:8px;">Fermer</button>
-        </div>
+        <h3 style="font-family:'Bebas Neue'; color:var(--prof); font-size:1.8em;">Bilan de séance</h3>
+        <canvas id="radarChart" style="max-height:250px; margin-bottom:15px;"></canvas>
+        <textarea id="bilan-texte" rows="3" placeholder="Qu'as-tu appris aujourd'hui ?"></textarea>
+        <button onclick="confirmerEnvoi()" class="btn-prof">Confirmer l'envoi au professeur</button>
+        <button onclick="document.getElementById('modal-overlay').classList.add('hidden')" class="btn-ghost" style="margin-top:8px;">Fermer</button>
     </div>
 </div>
 
 <script>
+// --- CONFIGURATION FIREBASE ---
 const firebaseConfig = {
   apiKey: "AIzaSyCEYWqZ9GGwWHZ4mEUS4HgaZL03hXlKpcE",
   authDomain: "muscu-3e.firebaseapp.com",
@@ -342,19 +317,9 @@ const EXERCICES = {
     "Burpees": { zone:"cardio", list:["Marche de l'Ours","Sprawl","Burpees"] }
 };
 
-const ateliers = {
-    haut: ["Pectoraux","Biceps","Triceps","Trapèzes"],
-    bas: ["Quadriceps","Ischios","Fessiers","Mollets"],
-    tronc: ["Abdominaux","Obliques","Grand Dorsal"],
-    cardio: ["Jumping Jack","Mountain Climber","Burpees"]
-};
-
-const kgSelect = document.getElementById("kg");
-for(let i=1; i<=150; i++) {
-    let opt = document.createElement("option");
-    opt.value = i; opt.text = i + " kg";
-    kgSelect.add(opt);
-}
+// Initialisation Kg Select
+const kgSel = document.getElementById("kg");
+for(let i=1; i<=150; i++) { kgSel.innerHTML += `<option value="${i}">${i} kg</option>`; }
 
 function majEleves() {
     const s = document.getElementById("eleve");
@@ -375,30 +340,10 @@ function connexion() {
     initTableau();
 }
 
-function initTableau() {
-    const b = document.getElementById("table-body");
-    b.innerHTML = "";
-    Object.keys(ateliers).forEach(z => {
-        ateliers[z].forEach(at => {
-            const d = dataEleve[at] || null;
-            b.innerHTML += `
-                <tr class="${d?'done':''}">
-                    <td><span class="badge bg-${z}">${z[0]}</span></td>
-                    <td>${at}</td>
-                    <td>${d?d.ex:'-'}</td>
-                    <td style="color:var(--haut)">${d?d.p:'-'}</td>
-                    <td>${d?d.rm:'-'}</td>
-                    <td>${d?d.res:'-'}</td>
-                </tr>`;
-        });
-    });
-    updateProgress();
-}
-
 function majExercices() {
     const at = document.getElementById("atelier").value;
     const exSel = document.getElementById("exercice");
-    if (!at) { exSel.classList.add("hidden"); return; }
+    if (!at) return;
     const { zone, list } = EXERCICES[at];
     exSel.innerHTML = '<option value="">-- Exercice --</option>' + list.map(e => `<option value="${e}">${e}</option>`).join("");
     exSel.classList.remove("hidden");
@@ -407,152 +352,137 @@ function majExercices() {
 
 function majUI() {
     const ex = document.getElementById("exercice").value;
-    const isElastique = ELASTIQUE_EXOS.includes(ex);
-    const isAlt = ALT_EXOS.includes(ex);
-    document.getElementById("f-std").className = (!isAlt && !isElastique) ? "" : "hidden";
-    document.getElementById("f-alt").className = (isAlt && !isElastique) ? "" : "hidden";
-    document.getElementById("f-elastique").className = isElastique ? "" : "hidden";
+    document.getElementById("f-std").className = (!ALT_EXOS.includes(ex) && !ELASTIQUE_EXOS.includes(ex)) ? "" : "hidden";
+    document.getElementById("f-alt").className = ALT_EXOS.includes(ex) ? "" : "hidden";
+    document.getElementById("f-elastique").className = ELASTIQUE_EXOS.includes(ex) ? "" : "hidden";
 }
 
 function selectElastique(c) {
     document.getElementById("val-elastique").value = c;
-    ["vert","rouge","noir"].forEach(id => document.getElementById("el-"+id).style.border = "none");
-    document.getElementById("el-"+c.toLowerCase()).style.border = "2px solid white";
+    ["Vert","Rouge","Noir"].forEach(col => document.getElementById("el-"+col).style.border = "none");
+    document.getElementById("el-"+c).style.border = "3px solid white";
 }
 
 function validateInputs() {
     const kg = document.getElementById("kg").value;
     const reps = Number(document.getElementById("reps").value);
     const fb = document.getElementById("rm-feedback");
-    
-    if (kg !== "" && reps > 0) {
-        let label = "", color = "", rmText = "";
-        
-        // Calcul 1RM si pas PDC et reps raisonnables
+    if (kg && reps > 0) {
+        let label = "", color = "", rmTxt = "";
         if (kg !== "PDC" && reps <= 20) {
-            const rm = Math.round(Number(kg) / (1.0278 - 0.0278 * reps));
-            rmText = ` | 1RM : ${rm}kg`;
+            const rm = Math.round(kg / (1.0278 - 0.0278 * reps));
+            rmTxt = ` | 1RM : ${rm}kg`;
         }
-
-        // Détermination du bandeau Force/Volume/Toni
         if (reps <= 6) { label = "FORCE"; color = "#ff1744"; }
-        else if (reps <= 12) { label = "VOLUME / HYPERTROPHIE"; color = "#d500f9"; }
-        else { label = "TONIFICATION / ENDURANCE"; color = "#00e676"; }
-
+        else if (reps <= 12) { label = "VOLUME"; color = "#d500f9"; }
+        else { label = "TONIFICATION"; color = "#00e676"; }
         fb.style.display = "block";
         fb.style.borderLeftColor = color;
-        fb.innerHTML = `<b style="color:${color}">${label}</b>${rmText}`;
-    } else {
-        fb.style.display = "none";
-    }
+        fb.innerHTML = `<b style="color:${color}">${label}</b>${rmTxt}`;
+    } else fb.style.display = "none";
 }
 
 function sauverSérie() {
-    const at = document.getElementById("atelier").value;
-    const ex = document.getElementById("exercice").value;
-    const res = document.getElementById("ressenti").value;
-    const err = document.getElementById("input-error");
-    if (!at || !ex || !res) { err.innerText = "⚠️ Incomplet"; err.style.display="block"; return; }
-
+    const at = document.getElementById("atelier").value, ex = document.getElementById("exercice").value, res = document.getElementById("ressenti").value;
+    if (!at || !ex || !res) return;
     let p = "", rm = "-";
     const z = EXERCICES[at].zone;
-
-    if (ELASTIQUE_EXOS.includes(ex)) {
-        const c = document.getElementById("val-elastique").value;
-        const r = document.getElementById("reps-el").value;
-        if(!c || !r) return;
-        p = `Elas. ${c} × ${r}`;
-    } else if (ALT_EXOS.includes(ex)) {
-        const v = document.getElementById("val-alt").value;
-        p = v + " reps/sec";
-    } else {
-        const kg = document.getElementById("kg").value;
-        const reps = document.getElementById("reps").value;
-        if(!kg || !reps) return;
-        p = (kg === "PDC" ? "PDC" : kg + "kg") + " × " + reps;
-        if (kg !== "PDC" && reps <= 20) rm = Math.round(kg / (1.0278 - 0.0278 * reps)) + " kg";
+    if (ELASTIQUE_EXOS.includes(ex)) { p = `Elas. ${document.getElementById("val-elastique").value} × ${document.getElementById("reps-el").value}`; }
+    else if (ALT_EXOS.includes(ex)) { p = document.getElementById("val-alt").value + " reps/sec"; }
+    else {
+        const kg = document.getElementById("kg").value, r = document.getElementById("reps").value;
+        p = (kg === "PDC" ? "PDC" : kg + "kg") + " × " + r;
+        if (kg !== "PDC" && r <= 20) rm = Math.round(kg / (1.0278 - 0.0278 * r)) + " kg";
     }
-
-    dataEleve[at] = { z, ex, p, rm, res, ts: Date.now() };
+    dataEleve[at] = { z, ex, p, rm, res };
     localStorage.setItem("session_" + user, JSON.stringify(dataEleve));
-    rdb.ref("live").push({ u: user, at, ex, p, res, z, ts: Date.now() });
+    rdb.ref("live").push({ u: user, at, ex, p, res });
     initTableau();
-    
+    resetForm();
+}
+
+function resetForm() {
     document.getElementById("atelier").value = "";
     document.getElementById("exercice").classList.add("hidden");
-    document.getElementById("f-std").classList.add("hidden");
-    document.getElementById("f-alt").classList.add("hidden");
-    document.getElementById("f-elastique").classList.add("hidden");
-    document.getElementById("kg").value = "";
-    document.getElementById("reps").value = "";
+    ["f-std","f-alt","f-elastique"].forEach(f => document.getElementById(f).classList.add("hidden"));
     document.getElementById("rm-feedback").style.display = "none";
 }
 
-function updateProgress() {
-    const done = Object.keys(dataEleve).length;
-    document.getElementById("progress-bar").style.width = (done/15*100) + "%";
-    ["haut","bas","tronc","cardio"].forEach(z => {
-        document.getElementById("cnt-"+z).innerText = Object.values(dataEleve).filter(d => d.z === z).length;
-    });
-}
-
-function genererBilanVisuel(isForSending) {
-    if (Object.keys(dataEleve).length === 0) return;
-    setTimeout(() => {
-        const ctx = document.getElementById('radarChart').getContext('2d');
-        const vals = ['haut', 'bas', 'tronc', 'cardio'].map(z => Object.values(dataEleve).filter(d => d.z === z).length);
-        if (radarChartInstance) radarChartInstance.destroy();
-        radarChartInstance = new Chart(ctx, {
-            type: 'radar',
-            data: {
-                labels: ['Haut', 'Bas', 'Tronc', 'Cardio'],
-                datasets: [{ data: vals, backgroundColor: 'rgba(213,0,249,0.2)', borderColor: '#d500f9' }]
-            },
-            options: { scales: { r: { beginAtZero: true, ticks: { display: false } } }, plugins: { legend: { display: false } } }
-        });
-    }, 100);
-
-    let txt = `BILAN : ${user}\n`;
+function initTableau() {
+    const b = document.getElementById("table-body"); b.innerHTML = "";
     Object.keys(dataEleve).forEach(at => {
         const d = dataEleve[at];
-        txt += `• ${at} (${d.ex}): ${d.p}\n`;
+        b.innerHTML += `<tr><td>${at}</td><td>${d.ex}</td><td style="color:var(--haut)">${d.p}</td><td>${d.rm}</td><td>${d.res}</td></tr>`;
     });
-    document.getElementById("bilan-visual-area").innerText = txt;
-    if(!isForSending) {
-        document.getElementById("modal-overlay").classList.remove("hidden");
-        document.getElementById("bilan-view").classList.remove("hidden");
-        document.getElementById("success-view").classList.add("hidden");
-    }
+    updateCounters();
 }
 
-function ouvrirBilanFinal() {
-    genererBilanVisuel(true);
-    document.getElementById("reflexive-area").classList.remove("hidden");
-    document.getElementById("modal-overlay").classList.remove("hidden");
-}
-
-function confirmerEnvoi() {
-    const t = document.getElementById("bilan-texte").value;
-    rdb.ref(`data/${lesson||'Seance'}/${user}`).set({ ateliers: dataEleve, bilan: t }).then(() => {
-        localStorage.removeItem("session_" + user);
-        document.getElementById("bilan-view").classList.add("hidden");
-        document.getElementById("success-view").classList.remove("hidden");
-    });
-}
-
-function fermerModal() { document.getElementById("modal-overlay").classList.add("hidden"); }
-
-function accessProf() {
-    if (prompt("Code :") === "16170") {
-        document.getElementById("auth-screen").classList.add("hidden");
-        document.getElementById("app-eleve").classList.add("hidden");
-        document.getElementById("app-prof").classList.remove("hidden");
-    }
+function updateCounters() {
+    const counts = { haut:0, bas:0, tronc:0, cardio:0 };
+    Object.values(dataEleve).forEach(d => counts[d.z]++);
+    for(let z in counts) document.getElementById("cnt-"+z).innerText = counts[z];
+    document.getElementById("progress-bar").style.width = (Object.keys(dataEleve).length / 14 * 100) + "%";
 }
 
 function setSession(active) {
-    lesson = document.getElementById("lesson-input").value;
-    rdb.ref("config/active").set({ status: active, name: lesson });
+    const name = document.getElementById("lesson-input").value || "Séance";
+    rdb.ref("config/active").set({ status: active, name: name });
+}
+
+function accessProf() {
+    if (prompt("Code :") === "16170") {
+        document.getElementById("app-eleve").classList.add("hidden");
+        document.getElementById("app-prof").classList.remove("hidden");
+        // Ecouter le flux live
+        rdb.ref("live").limitToLast(10).on("child_added", s => {
+            const d = s.val();
+            const div = document.createElement("div"); div.className = "live-entry";
+            div.innerHTML = `<b>${d.u}</b> : ${d.at} (${d.p}) ${d.res}`;
+            const feed = document.getElementById("live-feed");
+            feed.prepend(div);
+        });
+    }
+}
+
+// --- ÉCOUTEUR DE SESSION (IMPORTANT POUR LE BANDEAU) ---
+rdb.ref("config/active").on("value", s => {
+    const data = s.val();
+    const banner = document.getElementById("lesson-banner");
+    if (data && data.status) {
+        lesson = data.name;
+        banner.classList.remove("hidden");
+        document.getElementById("cur-lesson-name").innerText = lesson;
+    } else {
+        banner.classList.add("hidden");
+    }
+});
+
+function ouvrirBilanFinal() {
+    document.getElementById("modal-overlay").classList.remove("hidden");
+    setTimeout(initRadar, 100);
+}
+
+function initRadar() {
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    const vals = ['haut','bas','tronc','cardio'].map(z => Object.values(dataEleve).filter(d => d.z === z).length);
+    if (radarChartInstance) radarChartInstance.destroy();
+    radarChartInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['Haut', 'Bas', 'Tronc', 'Cardio'],
+            datasets: [{ label: 'Ateliers', data: vals, backgroundColor: 'rgba(213,0,249,0.2)', borderColor: '#d500f9' }]
+        },
+        options: { scales: { r: { beginAtZero: true, max: 5 } } }
+    });
+}
+
+function confirmerEnvoi() {
+    const bilanTxt = document.getElementById("bilan-texte").value;
+    rdb.ref(`data/${lesson}/${user}`).set({ ateliers: dataEleve, bilan: bilanTxt, date: new Date().toLocaleDateString() }).then(() => {
+        alert("Bilan envoyé ! Bravo pour ta séance.");
+        localStorage.removeItem("session_" + user);
+        location.reload();
+    });
 }
 </script>
 </body>
