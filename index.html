@@ -23,12 +23,10 @@
             color: var(--text);
             margin: 0;
             padding-bottom: env(safe-area-inset-bottom);
-            overscroll-behavior: none;
         }
 
         .container { max-width: 500px; margin: auto; padding: 10px; }
 
-        /* Banner Session */
         .banner {
             background: #1a1a1a;
             border-bottom: 2px solid var(--prof);
@@ -42,7 +40,6 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
         .banner-dot { width: 10px; height: 10px; background: var(--prof); border-radius: 50%; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% {opacity:1} 50% {opacity:0.3} 100% {opacity:1} }
@@ -50,72 +47,77 @@
         .card {
             background: var(--surface);
             border-radius: 20px;
-            padding: 20px;
+            padding: 18px;
             margin-bottom: 15px;
             border: 1px solid var(--border);
         }
 
-        h2, h3, h4 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; margin-top: 0; }
+        h3, h4 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; margin-top: 0; }
         
-        /* Formulaire */
         select, input, textarea {
             width: 100%;
-            padding: 15px;
-            margin: 8px 0;
+            padding: 14px;
+            margin: 6px 0;
             border-radius: 12px;
             border: 1px solid var(--border);
             background: var(--surface2);
             color: #fff;
-            font-size: 16px; /* Évite le zoom auto sur iOS */
+            font-size: 16px;
             font-family: inherit;
         }
 
         button {
             width: 100%;
-            padding: 16px;
+            padding: 15px;
             border-radius: 14px;
             border: none;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
             transition: transform 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
         }
         button:active { transform: scale(0.96); }
         .btn-primary { background: var(--haut); color: #000; }
         .btn-prof { background: var(--prof); color: #fff; }
+        .btn-danger { background: var(--bas); color: #fff; }
         .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); margin-top: 10px; }
 
-        /* Stats & Tableau */
+        /* Compteurs en haut */
         .zone-counters { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
-        .zone-counter { background: var(--surface2); padding: 10px; border-radius: 12px; text-align: center; }
-        .zc-num { font-family: 'Bebas Neue'; font-size: 22px; line-height: 1; }
-        .zc-lbl { font-size: 9px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+        .zone-counter { background: var(--surface2); padding: 8px; border-radius: 12px; text-align: center; border-bottom: 3px solid transparent; }
+        .zc-num { font-family: 'Bebas Neue'; font-size: 20px; line-height: 1; }
+        .zc-lbl { font-size: 8px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
 
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { text-align: left; color: var(--muted); font-size: 11px; padding: 10px 5px; border-bottom: 1px solid var(--border); }
-        td { padding: 12px 5px; border-bottom: 1px solid var(--border); }
+        /* Tableau stylisé */
+        .table-container { overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { text-align: center; color: var(--muted); font-size: 10px; padding: 10px 5px; border-bottom: 1px solid var(--border); text-transform: uppercase; }
+        td { padding: 12px 4px; border-bottom: 1px solid var(--border); text-align: center; }
+        
+        .badge-zone { 
+            padding: 3px 6px; 
+            border-radius: 4px; 
+            font-size: 9px; 
+            font-weight: 800; 
+            color: #000;
+            text-transform: uppercase;
+        }
 
-        /* Feedback Force/Vol */
         .rm-feedback { 
             background: rgba(255,255,255,0.05); 
             border-radius: 10px; 
-            padding: 12px; 
-            margin: 10px 0; 
-            font-size: 13px; 
+            padding: 10px; 
+            margin: 8px 0; 
+            font-size: 12px; 
             border-left: 4px solid var(--haut);
             display: none;
         }
 
-        /* Modal & Radar */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; padding: 15px; display: flex; align-items: center; justify-content: center; }
         .modal-box { background: #fff; color: #000; width: 100%; border-radius: 24px; padding: 20px; max-height: 95vh; overflow-y: auto; }
-        .chart-container { width: 100%; margin-bottom: 20px; aspect-ratio: 1; }
+        .chart-container { width: 100%; margin-bottom: 15px; aspect-ratio: 1; }
 
-        .live-feed { background: #000; border-radius: 12px; padding: 10px; font-family: monospace; font-size: 12px; height: 300px; overflow-y: auto; color: #00e676; border: 1px solid #222; }
+        .live-feed { background: #000; border-radius: 12px; padding: 10px; font-family: monospace; font-size: 11px; height: 300px; overflow-y: auto; color: #00e676; border: 1px solid #222; }
         .live-item { padding: 6px 0; border-bottom: 1px solid #111; }
 
         .hidden { display: none !important; }
@@ -131,30 +133,30 @@
 </div>
 
 <div class="container">
-    <h2 id="main-title" style="text-align: center; color: var(--haut);">🚀 EPS MUSCU CONNECT</h2>
+    <h2 style="text-align: center; font-family:'Bebas Neue'; letter-spacing:2px; color: var(--haut);">🏋️ EPS MUSCU CONNECT</h2>
 
     <div id="auth-screen" class="card">
         <h3>Connexion</h3>
         <select id="classe" onchange="majEleves()">
-            <option value="">-- Choisis ta classe --</option>
+            <option value="">-- Classe --</option>
             <option>3A</option><option>3B</option><option>3C</option><option>3D</option>
         </select>
-        <select id="eleve"><option value="">-- Ton numéro --</option></select>
-        <button class="btn-primary" onclick="connexion()" style="margin-top:15px;">C'EST PARTI !</button>
+        <select id="eleve"><option value="">-- N° Élève --</option></select>
+        <button class="btn-primary" onclick="connexion()" style="margin-top:10px;">ENTRER</button>
     </div>
 
     <div id="app-eleve" class="hidden">
         <div class="card" id="input-card">
-            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                <span id="user-info" style="font-weight:700; color:var(--prof)"></span>
-                <span onclick="location.reload()" style="font-size:12px; color:var(--muted)">Déconnexion</span>
+            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                <span id="user-info" style="font-weight:700; color:var(--prof); font-size:14px;"></span>
+                <span onclick="location.reload()" style="font-size:11px; color:var(--muted); text-decoration:underline;">Quitter</span>
             </div>
 
             <div class="zone-counters">
-                <div class="zone-counter"><div class="zc-num" id="cnt-haut" style="color:var(--haut)">0</div><div class="zc-lbl">Haut</div></div>
-                <div class="zone-counter"><div class="zc-num" id="cnt-bas"  style="color:var(--bas)">0</div><div class="zc-lbl">Bas</div></div>
-                <div class="zone-counter"><div class="zc-num" id="cnt-tronc" style="color:var(--tronc)">0</div><div class="zc-lbl">Tronc</div></div>
-                <div class="zone-counter"><div class="zc-num" id="cnt-cardio" style="color:var(--cardio)">0</div><div class="zc-lbl">Cardio</div></div>
+                <div class="zone-counter" style="border-bottom-color:var(--haut)"><div class="zc-num" id="cnt-haut" style="color:var(--haut)">0</div><div class="zc-lbl">Haut</div></div>
+                <div class="zone-counter" style="border-bottom-color:var(--bas)"><div class="zc-num" id="cnt-bas"  style="color:var(--bas)">0</div><div class="zc-lbl">Bas</div></div>
+                <div class="zone-counter" style="border-bottom-color:var(--tronc)"><div class="zc-num" id="cnt-tronc" style="color:var(--tronc)">0</div><div class="zc-lbl">Tronc</div></div>
+                <div class="zone-counter" style="border-bottom-color:var(--cardio)"><div class="zc-num" id="cnt-cardio" style="color:var(--cardio)">0</div><div class="zc-lbl">Cardio</div></div>
             </div>
 
             <select id="atelier" onchange="majExercices()">
@@ -191,65 +193,74 @@
 
             <div id="f-elastique" class="hidden">
                 <div class="row" style="margin-bottom:8px;">
-                    <button id="el-Vert" style="background:#27ae60; font-size:12px; padding:10px;" onclick="selectElastique('Vert')">VERT</button>
-                    <button id="el-Rouge" style="background:#e74c3c; font-size:12px; padding:10px;" onclick="selectElastique('Rouge')">ROUGE</button>
-                    <button id="el-Noir" style="background:#222; font-size:12px; padding:10px;" onclick="selectElastique('Noir')">NOIR</button>
+                    <button id="el-Vert" style="background:#27ae60; font-size:11px;" onclick="selectElastique('Vert')">VERT</button>
+                    <button id="el-Rouge" style="background:#e74c3c; font-size:11px;" onclick="selectElastique('Rouge')">ROUGE</button>
+                    <button id="el-Noir" style="background:#222; font-size:11px;" onclick="selectElastique('Noir')">NOIR</button>
                 </div>
                 <input type="hidden" id="val-elastique">
-                <input type="number" id="reps-el" placeholder="Répétitions" inputmode="numeric">
+                <input type="number" id="reps-el" placeholder="Nombre de répétitions" inputmode="numeric">
             </div>
 
             <select id="ressenti">
-                <option value="">-- Ressenti (Difficulté) --</option>
+                <option value="">-- Ton ressenti --</option>
                 <option value="😄">😄 Facile</option>
                 <option value="🙂">🙂 Bien</option>
                 <option value="😫">😫 Difficile</option>
             </select>
 
             <div class="rm-feedback" id="rm-feedback"></div>
-            <button class="btn-primary" onclick="sauverSérie()" style="margin-top:10px;">ENREGISTRER</button>
+            <button class="btn-primary" onclick="sauverSérie()" style="margin-top:10px;">ENREGISTRER MA SÉRIE</button>
         </div>
 
         <div class="card">
-            <h4>Historique Séance</h4>
-            <table id="main-table">
-                <thead><tr><th>Atelier</th><th>Perf</th><th>RM</th><th>Avis</th></tr></thead>
-                <tbody id="table-body"></tbody>
-            </table>
-            <button onclick="ouvrirBilanFinal()" class="btn-prof" style="margin-top:20px;">📤 BILAN FINAL</button>
+            <h4>📊 Mon Récapitulatif</h4>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Zone</th>
+                            <th>Atelier</th>
+                            <th>Performance</th>
+                            <th>1RM</th>
+                            <th>Avis</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+            <button onclick="ouvrirBilanFinal()" class="btn-prof" style="margin-top:20px;">📤 TERMINER & BILAN FINAL</button>
         </div>
     </div>
 
     <div id="app-prof" class="hidden">
         <div class="card" style="border-top: 5px solid var(--prof);">
-            <h3>Interface Professeur</h3>
-            <input type="text" id="lesson-input" placeholder="Titre de la leçon">
+            <h3>Espace Enseignant</h3>
+            <input type="text" id="lesson-input" placeholder="Titre de la leçon (ex: Muscu n°1)">
             <div class="row">
-                <button class="btn-primary" onclick="setSession(true)">DÉMARRER</button>
-                <button class="btn-danger" style="background:var(--bas)" onclick="setSession(false)">STOP</button>
+                <button class="btn-primary" onclick="setSession(true)">LANCER LA CLASSE</button>
+                <button class="btn-danger" onclick="setSession(false)">ARRETER</button>
             </div>
-            <h4 style="margin-top:20px;">Live Feed</h4>
+            <h4 style="margin-top:20px;">Activités en temps réel</h4>
             <div id="live-feed" class="live-feed"></div>
-            <button onclick="location.reload()" class="btn-ghost">Sortir</button>
+            <button onclick="location.reload()" class="btn-ghost">Mode Élève</button>
         </div>
     </div>
 
-    <span class="admin-link" style="opacity:0.2; font-size:10px; text-align:center; display:block; margin-top:40px;" onclick="accessProf()">Admin prof</span>
+    <span style="opacity:0.2; font-size:10px; text-align:center; display:block; margin-top:40px;" onclick="accessProf()">Admin prof</span>
 </div>
 
 <div id="modal-overlay" class="modal-overlay hidden">
     <div class="modal-box">
-        <h3 style="text-align:center; font-size:24px;">RÉSUMÉ DE TA SÉANCE</h3>
+        <h3 style="text-align:center; font-size:22px;">TON BILAN DE SÉANCE</h3>
         <div class="chart-container"><canvas id="radarChart"></canvas></div>
-        <p style="font-weight:700; margin-bottom:5px;">Note le bilan de la leçon du jour :</p>
-        <textarea id="bilan-texte" rows="4" placeholder="Points forts, points faibles..."></textarea>
-        <button onclick="confirmerEnvoi()" class="btn-prof">ENVOYER AU PROF</button>
-        <button onclick="document.getElementById('modal-overlay').classList.add('hidden')" class="btn-ghost">RETOUR</button>
+        <p style="font-weight:700; margin-bottom:5px; font-size:14px;">Note ton bilan de la leçon du jour :</p>
+        <textarea id="bilan-texte" rows="4" placeholder="Tape ton texte ici..."></textarea>
+        <button onclick="confirmerEnvoi()" class="btn-prof">TRANSMETTRE AU PROFESSEUR</button>
+        <button onclick="document.getElementById('modal-overlay').classList.add('hidden')" class="btn-ghost">MODIFIER MES DONNÉES</button>
     </div>
 </div>
 
 <script>
-// CONFIG FIREBASE (Reste inchangée)
 const firebaseConfig = {
   apiKey: "AIzaSyCEYWqZ9GGwWHZ4mEUS4HgaZL03hXlKpcE",
   authDomain: "muscu-3e.firebaseapp.com",
@@ -284,12 +295,11 @@ const EXERCICES = {
     "Burpees": { zone:"cardio", list:["Marche de l'Ours","Sprawl","Burpees"] }
 };
 
-// Init Charge
 for(let i=1; i<=150; i++) { document.getElementById("kg").innerHTML += `<option value="${i}">${i} kg</option>`; }
 
 function majEleves() {
     const s = document.getElementById("eleve");
-    s.innerHTML = '<option value="">-- Ton numéro --</option>';
+    s.innerHTML = '<option value="">-- N° --</option>';
     for (let i = 1; i <= 30; i++) s.innerHTML += `<option value="${i}">${i}</option>`;
 }
 
@@ -330,28 +340,24 @@ function selectElastique(c) {
 function validateInputs() {
     const kg = document.getElementById("kg").value, reps = Number(document.getElementById("reps").value), fb = document.getElementById("rm-feedback");
     if (kg && reps > 0) {
-        let label = "", color = "", rmTxt = "";
-        if (kg !== "PDC" && reps <= 20) {
-            const rm = Math.round(kg / (1.0278 - 0.0278 * reps));
-            rmTxt = ` | 1RM : ${rm}kg`;
-        }
+        let label = "", color = "";
         if (reps <= 6) { label = "OBJECTIF : FORCE"; color = "var(--bas)"; }
         else if (reps <= 12) { label = "OBJECTIF : VOLUME"; color = "var(--prof)"; }
         else { label = "OBJECTIF : TONIFICATION"; color = "var(--haut)"; }
         fb.style.display = "block"; fb.style.borderLeftColor = color;
-        fb.innerHTML = `<b style="color:${color}">${label}</b>${rmTxt}`;
+        fb.innerHTML = `<b style="color:${color}">${label}</b>`;
     } else fb.style.display = "none";
 }
 
 function sauverSérie() {
     const at = document.getElementById("atelier").value, ex = document.getElementById("exercice").value, res = document.getElementById("ressenti").value;
-    if (!at || !ex || !res) { alert("Formulaire incomplet !"); return; }
+    if (!at || !ex || !res) { alert("Complète tous les champs !"); return; }
     
     let p = "", rm = "-";
     const z = EXERCICES[at].zone;
 
     if (ELASTIQUE_EXOS.includes(ex)) { 
-        p = `Éla. ${document.getElementById("val-elastique").value} × ${document.getElementById("reps-el").value}`; 
+        p = `Elas.${document.getElementById("val-elastique").value} × ${document.getElementById("reps-el").value}`; 
     } else if (ALT_EXOS.includes(ex)) { 
         p = document.getElementById("val-alt").value + " reps/sec"; 
     } else {
@@ -369,7 +375,6 @@ function sauverSérie() {
 }
 
 function resetFields() {
-    // Efface les données pour le prochain atelier
     document.getElementById("kg").value = "";
     document.getElementById("reps").value = "";
     document.getElementById("val-alt").value = "";
@@ -379,10 +384,19 @@ function resetFields() {
 }
 
 function initTableau() {
-    const b = document.getElementById("table-body"); b.innerHTML = "";
+    const b = document.getElementById("table-body"); 
+    b.innerHTML = "";
     Object.keys(dataEleve).forEach(at => {
         const d = dataEleve[at];
-        b.innerHTML += `<tr><td>${at}</td><td style="color:var(--haut); font-weight:700">${d.p}</td><td>${d.rm}</td><td>${d.res}</td></tr>`;
+        const colorClass = `background:var(--${d.z})`;
+        b.innerHTML += `
+            <tr>
+                <td><span class="badge-zone" style="${colorClass}">${d.z}</span></td>
+                <td style="font-weight:700">${at}</td>
+                <td style="color:var(--haut); font-weight:700">${d.p}</td>
+                <td style="color:var(--muted)">${d.rm}</td>
+                <td>${d.res}</td>
+            </tr>`;
     });
     updateStats();
 }
@@ -400,16 +414,13 @@ function ouvrirBilanFinal() {
 
 function drawRadar() {
     const ctx = document.getElementById('radarChart').getContext('2d');
-    const labels = ['Haut du corps', 'Bas du corps', 'Tronc (Abdos/Dos)', 'Cardio'];
     const vals = ['haut','bas','tronc','cardio'].map(z => Object.values(dataEleve).filter(d => d.z === z).length);
-    
     if (radarChartInstance) radarChartInstance.destroy();
     radarChartInstance = new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: labels,
+            labels: ['Haut', 'Bas', 'Tronc', 'Cardio'],
             datasets: [{
-                label: 'Séries terminées',
                 data: vals,
                 backgroundColor: 'rgba(211, 0, 249, 0.2)',
                 borderColor: '#d500f9',
@@ -418,7 +429,7 @@ function drawRadar() {
             }]
         },
         options: {
-            scales: { r: { min: 0, max: 5, ticks: { stepSize: 1, display: false } } },
+            scales: { r: { min: 0, max: 5, ticks: { display: false } } },
             plugins: { legend: { display: false } }
         }
     });
@@ -427,16 +438,18 @@ function drawRadar() {
 function confirmerEnvoi() {
     const bilan = document.getElementById("bilan-texte").value;
     rdb.ref(`data/${lesson}/${user}`).set({ ateliers: dataEleve, bilan: bilan, date: new Date().toLocaleDateString() }).then(() => {
-        alert("Bravo ! Séance enregistrée.");
+        alert("Séance enregistrée !");
         localStorage.removeItem("session_" + user);
         location.reload();
     });
 }
 
-// PROF 
 function setSession(active) {
     const name = document.getElementById("lesson-input").value || "Séance";
-    if(active) rdb.ref("live").remove(); // Efface le live précédent au lancement
+    if(active) {
+        rdb.ref("live").remove(); 
+        document.getElementById("live-feed").innerHTML = ""; 
+    }
     rdb.ref("config/active").set({ status: active, name: name });
 }
 
@@ -453,7 +466,6 @@ function accessProf() {
     }
 }
 
-// Écouteur Session
 rdb.ref("config/active").on("value", s => {
     const d = s.val(), b = document.getElementById("lesson-banner");
     if (d && d.status) {
@@ -462,6 +474,5 @@ rdb.ref("config/active").on("value", s => {
     } else b.classList.add("hidden");
 });
 </script>
-
 </body>
 </html>
