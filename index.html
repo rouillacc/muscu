@@ -4,174 +4,151 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>EPS Muscu Connect+</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --haut:   #00e676;
-            --bas:    #ff1744;
-            --tronc:  #ffd740;
-            --cardio: #40c4ff;
-            --prof:   #d500f9;
-            --bg:     #0d0d0d;
-            --surface: #161616;
-            --surface2: #1e1e1e;
-            --border: rgba(255,255,255,0.08);
-            --text:   #f0f0f0;
-            --muted:  #666;
+            --haut: #00e676; --bas: #ff1744; --tronc: #ffd740; --cardio: #40c4ff;
+            --prof: #d500f9; --bg: #0d0d0d; --surface: #161616; --surface2: #222;
+            --border: rgba(255,255,255,0.1); --text: #f0f0f0; --muted: #888;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
 
         body {
             font-family: 'DM Sans', sans-serif;
             background: var(--bg);
             color: var(--text);
             margin: 0;
-            padding-bottom: 40px;
-            min-height: 100vh;
+            padding-bottom: env(safe-area-inset-bottom);
+            overscroll-behavior: none;
         }
 
-        .container { max-width: 680px; margin: auto; padding: 12px 14px; }
+        .container { max-width: 500px; margin: auto; padding: 10px; }
 
+        /* Banner Session */
         .banner {
-            background: var(--surface);
+            background: #1a1a1a;
             border-bottom: 2px solid var(--prof);
-            padding: 10px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: .04em;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 700;
             position: sticky;
             top: 0;
             z-index: 1000;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-        .banner-dot { width: 8px; height: 8px; background: var(--prof); border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+        .banner-dot { width: 10px; height: 10px; background: var(--prof); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% {opacity:1} 50% {opacity:0.3} 100% {opacity:1} }
 
         .card {
             background: var(--surface);
-            border-radius: 16px;
-            padding: 18px;
-            margin: 12px 0;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
             border: 1px solid var(--border);
-            border-top: 4px solid var(--border);
-            transition: border-top-color .3s;
         }
-        .card h3, .card h4 { font-family: 'Bebas Neue', sans-serif; letter-spacing: .06em; font-size: 1.3em; margin: 0 0 12px; color: var(--text); }
 
-        .z-haut  { border-top-color: var(--haut)  !important; }
-        .z-bas   { border-top-color: var(--bas)   !important; }
-        .z-tronc { border-top-color: var(--tronc) !important; }
-        .z-cardio{ border-top-color: var(--cardio)!important; }
-
-        .badge {
-            padding: 2px 7px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: .05em;
-            text-transform: uppercase;
-        }
-        .bg-haut  { background: var(--haut);   color:#000; }
-        .bg-bas   { background: var(--bas);    color:#fff; }
-        .bg-tronc { background: var(--tronc);  color:#000; }
-        .bg-cardio{ background: var(--cardio); color:#000; }
-
-        input, select, textarea {
+        h2, h3, h4 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; margin-top: 0; }
+        
+        /* Formulaire */
+        select, input, textarea {
             width: 100%;
-            padding: 13px 14px;
-            margin: 6px 0;
-            border-radius: 10px;
+            padding: 15px;
+            margin: 8px 0;
+            border-radius: 12px;
             border: 1px solid var(--border);
-            font-size: 16px;
             background: var(--surface2);
-            color: var(--text);
-            font-family: 'DM Sans', sans-serif;
-            outline: none;
-            transition: border-color .2s;
-            appearance: none;
+            color: #fff;
+            font-size: 16px; /* Évite le zoom auto sur iOS */
+            font-family: inherit;
         }
 
         button {
             width: 100%;
-            padding: 14px;
-            border-radius: 12px;
+            padding: 16px;
+            border-radius: 14px;
             border: none;
             font-weight: 700;
+            font-size: 16px;
             cursor: pointer;
-            margin-top: 8px;
-            font-size: 15px;
-            font-family: 'DM Sans', sans-serif;
-            transition: transform .12s, opacity .12s;
+            transition: transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        button:active { transform: scale(.97); opacity: .9; }
+        button:active { transform: scale(0.96); }
         .btn-primary { background: var(--haut); color: #000; }
-        .btn-danger  { background: var(--bas);  color: #fff; }
-        .btn-ghost   { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-        .btn-prof    { background: var(--prof); color: #fff; }
+        .btn-prof { background: var(--prof); color: #fff; }
+        .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); margin-top: 10px; }
 
-        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
-        th { background: var(--surface2); color: var(--muted); font-size: 10px; padding: 8px 6px; text-align: center; }
-        td { border-bottom: 1px solid var(--border); padding: 9px 6px; text-align: center; color: #ccc; }
-        tr.done td { color: var(--text); }
+        /* Stats & Tableau */
+        .zone-counters { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
+        .zone-counter { background: var(--surface2); padding: 10px; border-radius: 12px; text-align: center; }
+        .zc-num { font-family: 'Bebas Neue'; font-size: 22px; line-height: 1; }
+        .zc-lbl { font-size: 9px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
 
-        .progress-wrap { background: var(--surface2); border-radius: 8px; height: 6px; margin: 6px 0 12px; overflow: hidden; }
-        .progress-bar  { height: 100%; background: var(--haut); border-radius: 8px; transition: width .5s; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { text-align: left; color: var(--muted); font-size: 11px; padding: 10px 5px; border-bottom: 1px solid var(--border); }
+        td { padding: 12px 5px; border-bottom: 1px solid var(--border); }
 
-        .rm-feedback { background: var(--surface2); border-radius: 10px; padding: 10px 14px; font-size: 13px; margin-top: 8px; border-left: 3px solid var(--haut); display: none; }
+        /* Feedback Force/Vol */
+        .rm-feedback { 
+            background: rgba(255,255,255,0.05); 
+            border-radius: 10px; 
+            padding: 12px; 
+            margin: 10px 0; 
+            font-size: 13px; 
+            border-left: 4px solid var(--haut);
+            display: none;
+        }
 
-        .live-feed { max-height: 250px; overflow-y: auto; background: #000; padding: 10px 14px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 11px; color: #00e676; border: 1px solid #222; }
-        .live-entry { padding: 4px 0; border-bottom: 1px solid #111; }
+        /* Modal & Radar */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; padding: 15px; display: flex; align-items: center; justify-content: center; }
+        .modal-box { background: #fff; color: #000; width: 100%; border-radius: 24px; padding: 20px; max-height: 95vh; overflow-y: auto; }
+        .chart-container { width: 100%; margin-bottom: 20px; aspect-ratio: 1; }
 
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 1999; display: flex; align-items: center; justify-content: center; padding: 16px; }
-        .modal-box { background: #fff; color: #1a1a1a; border-radius: 18px; padding: 22px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
-        
+        .live-feed { background: #000; border-radius: 12px; padding: 10px; font-family: monospace; font-size: 12px; height: 300px; overflow-y: auto; color: #00e676; border: 1px solid #222; }
+        .live-item { padding: 6px 0; border-bottom: 1px solid #111; }
+
         .hidden { display: none !important; }
         .row { display: flex; gap: 8px; }
         .row > * { flex: 1; }
-
-        .zone-counters { display:flex; gap:8px; margin:10px 0; }
-        .zone-counter { flex:1; background:var(--surface2); border-radius:10px; padding:8px; text-align:center; border:1px solid var(--border); }
-        .zc-num { font-family:'Bebas Neue'; font-size:1.6em; line-height:1; }
-        .zc-lbl { font-size:9px; color:var(--muted); text-transform:uppercase; }
-
-        #main-title { font-family: 'Bebas Neue', sans-serif; font-size: 2em; letter-spacing: .08em; margin: 16px 0 4px; }
-        .admin-link { font-size: 11px; color: #333; margin-top: 60px; cursor: pointer; text-align: center; display: block; }
     </style>
 </head>
 <body>
 
 <div id="lesson-banner" class="banner hidden">
     <div class="banner-dot"></div>
-    SESSION EN COURS : <span id="cur-lesson-name" style="color:var(--prof)">---</span>
+    <span id="cur-lesson-name">---</span>
 </div>
 
 <div class="container">
-    <h2 id="main-title">🏋️ Muscu Connect+</h2>
+    <h2 id="main-title" style="text-align: center; color: var(--haut);">🚀 EPS MUSCU CONNECT</h2>
 
     <div id="auth-screen" class="card">
-        <h3>Identification</h3>
+        <h3>Connexion</h3>
         <select id="classe" onchange="majEleves()">
-            <option value="">-- Classe --</option>
+            <option value="">-- Choisis ta classe --</option>
             <option>3A</option><option>3B</option><option>3C</option><option>3D</option>
         </select>
-        <select id="eleve"><option value="">-- Numéro --</option></select>
-        <button class="btn-primary" onclick="connexion()">Entrer →</button>
+        <select id="eleve"><option value="">-- Ton numéro --</option></select>
+        <button class="btn-primary" onclick="connexion()" style="margin-top:15px;">C'EST PARTI !</button>
     </div>
 
     <div id="app-eleve" class="hidden">
         <div class="card" id="input-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                <span id="user-info" style="font-weight:600; font-size:13px;"></span>
-                <span onclick="location.reload()" style="color:var(--muted); font-size:12px; text-decoration:underline; cursor:pointer;">Quitter</span>
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                <span id="user-info" style="font-weight:700; color:var(--prof)"></span>
+                <span onclick="location.reload()" style="font-size:12px; color:var(--muted)">Déconnexion</span>
             </div>
-
-            <div class="progress-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
 
             <div class="zone-counters">
                 <div class="zone-counter"><div class="zc-num" id="cnt-haut" style="color:var(--haut)">0</div><div class="zc-lbl">Haut</div></div>
@@ -181,28 +158,18 @@
             </div>
 
             <select id="atelier" onchange="majExercices()">
-                <option value="">-- Choisir un atelier --</option>
+                <option value="">-- Sélectionne l'atelier --</option>
                 <optgroup label="💪 HAUT DU CORPS" data-zone="haut">
-                    <option value="Pectoraux">Pectoraux</option>
-                    <option value="Biceps">Biceps</option>
-                    <option value="Triceps">Triceps</option>
-                    <option value="Trapèzes">Trapèzes</option>
+                    <option>Pectoraux</option><option>Biceps</option><option>Triceps</option><option>Trapèzes</option>
                 </optgroup>
                 <optgroup label="🦵 BAS DU CORPS" data-zone="bas">
-                    <option value="Quadriceps">Quadriceps</option>
-                    <option value="Ischios">Ischios</option>
-                    <option value="Fessiers">Fessiers</option>
-                    <option value="Mollets">Mollets</option>
+                    <option>Quadriceps</option><option>Ischios</option><option>Fessiers</option><option>Mollets</option>
                 </optgroup>
                 <optgroup label="🧘 TRONC" data-zone="tronc">
-                    <option value="Abdominaux">Abdominaux</option>
-                    <option value="Obliques">Obliques</option>
-                    <option value="Grand Dorsal">Grand Dorsal</option>
+                    <option>Abdominaux</option><option>Obliques</option><option>Grand Dorsal</option>
                 </optgroup>
                 <optgroup label="❤️ CARDIO" data-zone="cardio">
-                    <option value="Jumping Jack">Jumping Jack</option>
-                    <option value="Mountain Climber">Mountain Climber</option>
-                    <option value="Burpees">Burpees</option>
+                    <option>Jumping Jack</option><option>Mountain Climber</option><option>Burpees</option>
                 </optgroup>
             </select>
             
@@ -211,8 +178,8 @@
             <div id="f-std" class="hidden">
                 <div class="row">
                     <select id="kg" onchange="validateInputs()">
-                        <option value="">-- Charge --</option>
-                        <option value="PDC">Poids de corps (PDC)</option>
+                        <option value="">Charge</option>
+                        <option value="PDC">PDC</option>
                     </select>
                     <input type="number" id="reps" placeholder="Reps" inputmode="numeric" oninput="validateInputs()">
                 </div>
@@ -223,66 +190,66 @@
             </div>
 
             <div id="f-elastique" class="hidden">
-                <p style="font-size:12px; color:var(--muted); margin:6px 0;">Couleur de l'élastique :</p>
-                <div style="display:flex; gap:6px; margin-bottom:10px;">
-                    <div id="el-Vert" style="flex:1; padding:10px; border-radius:8px; background:#27ae60; color:#fff; text-align:center; font-weight:700; cursor:pointer;" onclick="selectElastique('Vert')">Vert</div>
-                    <div id="el-Rouge" style="flex:1; padding:10px; border-radius:8px; background:#e74c3c; color:#fff; text-align:center; font-weight:700; cursor:pointer;" onclick="selectElastique('Rouge')">Rouge</div>
-                    <div id="el-Noir" style="flex:1; padding:10px; border-radius:8px; background:#2c2c2c; color:#fff; text-align:center; font-weight:700; cursor:pointer;" onclick="selectElastique('Noir')">Noir</div>
+                <div class="row" style="margin-bottom:8px;">
+                    <button id="el-Vert" style="background:#27ae60; font-size:12px; padding:10px;" onclick="selectElastique('Vert')">VERT</button>
+                    <button id="el-Rouge" style="background:#e74c3c; font-size:12px; padding:10px;" onclick="selectElastique('Rouge')">ROUGE</button>
+                    <button id="el-Noir" style="background:#222; font-size:12px; padding:10px;" onclick="selectElastique('Noir')">NOIR</button>
                 </div>
                 <input type="hidden" id="val-elastique">
                 <input type="number" id="reps-el" placeholder="Répétitions" inputmode="numeric">
             </div>
 
             <select id="ressenti">
-                <option value="">-- Ressenti ? --</option>
+                <option value="">-- Ressenti (Difficulté) --</option>
                 <option value="😄">😄 Facile</option>
                 <option value="🙂">🙂 Bien</option>
                 <option value="😫">😫 Difficile</option>
             </select>
 
             <div class="rm-feedback" id="rm-feedback"></div>
-            <button class="btn-primary" onclick="sauverSérie()">✅ Valider l'atelier</button>
+            <button class="btn-primary" onclick="sauverSérie()" style="margin-top:10px;">ENREGISTRER</button>
         </div>
 
         <div class="card">
-            <h4>📊 Mes Performances</h4>
-            <table>
-                <thead><tr><th>Atelier</th><th>Exercice</th><th>Perf.</th><th>1RM</th><th>😊</th></tr></thead>
+            <h4>Historique Séance</h4>
+            <table id="main-table">
+                <thead><tr><th>Atelier</th><th>Perf</th><th>RM</th><th>Avis</th></tr></thead>
                 <tbody id="table-body"></tbody>
             </table>
-            <button onclick="ouvrirBilanFinal()" class="btn-prof" style="margin-top:15px;">📤 Envoyer le bilan final</button>
+            <button onclick="ouvrirBilanFinal()" class="btn-prof" style="margin-top:20px;">📤 BILAN FINAL</button>
         </div>
     </div>
 
     <div id="app-prof" class="hidden">
-        <div class="card" style="border-top-color: var(--prof);">
-            <h3>🎓 Espace Professeur</h3>
-            <input type="text" id="lesson-input" placeholder="Nom de la séance (ex: Séance 1)">
+        <div class="card" style="border-top: 5px solid var(--prof);">
+            <h3>Interface Professeur</h3>
+            <input type="text" id="lesson-input" placeholder="Titre de la leçon">
             <div class="row">
-                <button class="btn-prof" onclick="setSession(true)">▶ Démarrer la séance</button>
-                <button class="btn-danger" onclick="setSession(false)">■ Arrêter</button>
+                <button class="btn-primary" onclick="setSession(true)">DÉMARRER</button>
+                <button class="btn-danger" style="background:var(--bas)" onclick="setSession(false)">STOP</button>
             </div>
-            <h4 style="margin-top:20px;">📢 Flux en direct</h4>
+            <h4 style="margin-top:20px;">Live Feed</h4>
             <div id="live-feed" class="live-feed"></div>
-            <button onclick="location.reload()" class="btn-ghost" style="margin-top:20px;">Retour Écran Élève</button>
+            <button onclick="location.reload()" class="btn-ghost">Sortir</button>
         </div>
     </div>
 
-    <span class="admin-link" onclick="accessProf()">Accès Professeur</span>
+    <span class="admin-link" style="opacity:0.2; font-size:10px; text-align:center; display:block; margin-top:40px;" onclick="accessProf()">Admin prof</span>
 </div>
 
 <div id="modal-overlay" class="modal-overlay hidden">
     <div class="modal-box">
-        <h3 style="font-family:'Bebas Neue'; color:var(--prof); font-size:1.8em;">Bilan de séance</h3>
-        <canvas id="radarChart" style="max-height:250px; margin-bottom:15px;"></canvas>
-        <textarea id="bilan-texte" rows="3" placeholder="Qu'as-tu appris aujourd'hui ?"></textarea>
-        <button onclick="confirmerEnvoi()" class="btn-prof">Confirmer l'envoi au professeur</button>
-        <button onclick="document.getElementById('modal-overlay').classList.add('hidden')" class="btn-ghost" style="margin-top:8px;">Fermer</button>
+        <h3 style="text-align:center; font-size:24px;">RÉSUMÉ DE TA SÉANCE</h3>
+        <div class="chart-container"><canvas id="radarChart"></canvas></div>
+        <p style="font-weight:700; margin-bottom:5px;">Note le bilan de la leçon du jour :</p>
+        <textarea id="bilan-texte" rows="4" placeholder="Points forts, points faibles..."></textarea>
+        <button onclick="confirmerEnvoi()" class="btn-prof">ENVOYER AU PROF</button>
+        <button onclick="document.getElementById('modal-overlay').classList.add('hidden')" class="btn-ghost">RETOUR</button>
     </div>
 </div>
 
 <script>
-// --- CONFIGURATION FIREBASE ---
+// CONFIG FIREBASE (Reste inchangée)
 const firebaseConfig = {
   apiKey: "AIzaSyCEYWqZ9GGwWHZ4mEUS4HgaZL03hXlKpcE",
   authDomain: "muscu-3e.firebaseapp.com",
@@ -317,37 +284,34 @@ const EXERCICES = {
     "Burpees": { zone:"cardio", list:["Marche de l'Ours","Sprawl","Burpees"] }
 };
 
-// Initialisation Kg Select
-const kgSel = document.getElementById("kg");
-for(let i=1; i<=150; i++) { kgSel.innerHTML += `<option value="${i}">${i} kg</option>`; }
+// Init Charge
+for(let i=1; i<=150; i++) { document.getElementById("kg").innerHTML += `<option value="${i}">${i} kg</option>`; }
 
 function majEleves() {
     const s = document.getElementById("eleve");
-    s.innerHTML = '<option value="">-- Numéro --</option>';
+    s.innerHTML = '<option value="">-- Ton numéro --</option>';
     for (let i = 1; i <= 30; i++) s.innerHTML += `<option value="${i}">${i}</option>`;
 }
 
 function connexion() {
-    const c = document.getElementById("classe").value;
-    const e = document.getElementById("eleve").value;
+    const c = document.getElementById("classe").value, e = document.getElementById("eleve").value;
     if (!c || !e) return;
     user = c + "_" + e;
     document.getElementById("auth-screen").classList.add("hidden");
     document.getElementById("app-eleve").classList.remove("hidden");
-    document.getElementById("user-info").innerText = `👤 ${c} – n°${e}`;
+    document.getElementById("user-info").innerText = user;
     const saved = localStorage.getItem("session_" + user);
     if (saved) dataEleve = JSON.parse(saved);
     initTableau();
 }
 
 function majExercices() {
-    const at = document.getElementById("atelier").value;
-    const exSel = document.getElementById("exercice");
+    const at = document.getElementById("atelier").value, exSel = document.getElementById("exercice");
     if (!at) return;
     const { zone, list } = EXERCICES[at];
     exSel.innerHTML = '<option value="">-- Exercice --</option>' + list.map(e => `<option value="${e}">${e}</option>`).join("");
     exSel.classList.remove("hidden");
-    document.getElementById("input-card").className = `card z-${zone}`;
+    document.getElementById("input-card").style.borderTop = `6px solid var(--${zone})`;
 }
 
 function majUI() {
@@ -359,52 +323,58 @@ function majUI() {
 
 function selectElastique(c) {
     document.getElementById("val-elastique").value = c;
-    ["Vert","Rouge","Noir"].forEach(col => document.getElementById("el-"+col).style.border = "none");
-    document.getElementById("el-"+c).style.border = "3px solid white";
+    ["Vert","Rouge","Noir"].forEach(col => document.getElementById("el-"+col).style.boxShadow = "none");
+    document.getElementById("el-"+c).style.boxShadow = "0 0 0 3px #fff";
 }
 
 function validateInputs() {
-    const kg = document.getElementById("kg").value;
-    const reps = Number(document.getElementById("reps").value);
-    const fb = document.getElementById("rm-feedback");
+    const kg = document.getElementById("kg").value, reps = Number(document.getElementById("reps").value), fb = document.getElementById("rm-feedback");
     if (kg && reps > 0) {
         let label = "", color = "", rmTxt = "";
         if (kg !== "PDC" && reps <= 20) {
             const rm = Math.round(kg / (1.0278 - 0.0278 * reps));
             rmTxt = ` | 1RM : ${rm}kg`;
         }
-        if (reps <= 6) { label = "FORCE"; color = "#ff1744"; }
-        else if (reps <= 12) { label = "VOLUME"; color = "#d500f9"; }
-        else { label = "TONIFICATION"; color = "#00e676"; }
-        fb.style.display = "block";
-        fb.style.borderLeftColor = color;
+        if (reps <= 6) { label = "OBJECTIF : FORCE"; color = "var(--bas)"; }
+        else if (reps <= 12) { label = "OBJECTIF : VOLUME"; color = "var(--prof)"; }
+        else { label = "OBJECTIF : TONIFICATION"; color = "var(--haut)"; }
+        fb.style.display = "block"; fb.style.borderLeftColor = color;
         fb.innerHTML = `<b style="color:${color}">${label}</b>${rmTxt}`;
     } else fb.style.display = "none";
 }
 
 function sauverSérie() {
     const at = document.getElementById("atelier").value, ex = document.getElementById("exercice").value, res = document.getElementById("ressenti").value;
-    if (!at || !ex || !res) return;
+    if (!at || !ex || !res) { alert("Formulaire incomplet !"); return; }
+    
     let p = "", rm = "-";
     const z = EXERCICES[at].zone;
-    if (ELASTIQUE_EXOS.includes(ex)) { p = `Elas. ${document.getElementById("val-elastique").value} × ${document.getElementById("reps-el").value}`; }
-    else if (ALT_EXOS.includes(ex)) { p = document.getElementById("val-alt").value + " reps/sec"; }
-    else {
+
+    if (ELASTIQUE_EXOS.includes(ex)) { 
+        p = `Éla. ${document.getElementById("val-elastique").value} × ${document.getElementById("reps-el").value}`; 
+    } else if (ALT_EXOS.includes(ex)) { 
+        p = document.getElementById("val-alt").value + " reps/sec"; 
+    } else {
         const kg = document.getElementById("kg").value, r = document.getElementById("reps").value;
         p = (kg === "PDC" ? "PDC" : kg + "kg") + " × " + r;
         if (kg !== "PDC" && r <= 20) rm = Math.round(kg / (1.0278 - 0.0278 * r)) + " kg";
     }
+
     dataEleve[at] = { z, ex, p, rm, res };
     localStorage.setItem("session_" + user, JSON.stringify(dataEleve));
     rdb.ref("live").push({ u: user, at, ex, p, res });
+    
     initTableau();
-    resetForm();
+    resetFields();
 }
 
-function resetForm() {
-    document.getElementById("atelier").value = "";
-    document.getElementById("exercice").classList.add("hidden");
-    ["f-std","f-alt","f-elastique"].forEach(f => document.getElementById(f).classList.add("hidden"));
+function resetFields() {
+    // Efface les données pour le prochain atelier
+    document.getElementById("kg").value = "";
+    document.getElementById("reps").value = "";
+    document.getElementById("val-alt").value = "";
+    document.getElementById("reps-el").value = "";
+    document.getElementById("ressenti").value = "";
     document.getElementById("rm-feedback").style.display = "none";
 }
 
@@ -412,20 +382,61 @@ function initTableau() {
     const b = document.getElementById("table-body"); b.innerHTML = "";
     Object.keys(dataEleve).forEach(at => {
         const d = dataEleve[at];
-        b.innerHTML += `<tr><td>${at}</td><td>${d.ex}</td><td style="color:var(--haut)">${d.p}</td><td>${d.rm}</td><td>${d.res}</td></tr>`;
+        b.innerHTML += `<tr><td>${at}</td><td style="color:var(--haut); font-weight:700">${d.p}</td><td>${d.rm}</td><td>${d.res}</td></tr>`;
     });
-    updateCounters();
+    updateStats();
 }
 
-function updateCounters() {
-    const counts = { haut:0, bas:0, tronc:0, cardio:0 };
-    Object.values(dataEleve).forEach(d => counts[d.z]++);
-    for(let z in counts) document.getElementById("cnt-"+z).innerText = counts[z];
-    document.getElementById("progress-bar").style.width = (Object.keys(dataEleve).length / 14 * 100) + "%";
+function updateStats() {
+    const c = { haut:0, bas:0, tronc:0, cardio:0 };
+    Object.values(dataEleve).forEach(d => c[d.z]++);
+    for(let z in c) document.getElementById("cnt-"+z).innerText = c[z];
 }
 
+function ouvrirBilanFinal() {
+    document.getElementById("modal-overlay").classList.remove("hidden");
+    setTimeout(drawRadar, 300);
+}
+
+function drawRadar() {
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    const labels = ['Haut du corps', 'Bas du corps', 'Tronc (Abdos/Dos)', 'Cardio'];
+    const vals = ['haut','bas','tronc','cardio'].map(z => Object.values(dataEleve).filter(d => d.z === z).length);
+    
+    if (radarChartInstance) radarChartInstance.destroy();
+    radarChartInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Séries terminées',
+                data: vals,
+                backgroundColor: 'rgba(211, 0, 249, 0.2)',
+                borderColor: '#d500f9',
+                borderWidth: 3,
+                pointBackgroundColor: '#d500f9'
+            }]
+        },
+        options: {
+            scales: { r: { min: 0, max: 5, ticks: { stepSize: 1, display: false } } },
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+
+function confirmerEnvoi() {
+    const bilan = document.getElementById("bilan-texte").value;
+    rdb.ref(`data/${lesson}/${user}`).set({ ateliers: dataEleve, bilan: bilan, date: new Date().toLocaleDateString() }).then(() => {
+        alert("Bravo ! Séance enregistrée.");
+        localStorage.removeItem("session_" + user);
+        location.reload();
+    });
+}
+
+// PROF 
 function setSession(active) {
     const name = document.getElementById("lesson-input").value || "Séance";
+    if(active) rdb.ref("live").remove(); // Efface le live précédent au lancement
     rdb.ref("config/active").set({ status: active, name: name });
 }
 
@@ -433,57 +444,24 @@ function accessProf() {
     if (prompt("Code :") === "16170") {
         document.getElementById("app-eleve").classList.add("hidden");
         document.getElementById("app-prof").classList.remove("hidden");
-        // Ecouter le flux live
-        rdb.ref("live").limitToLast(10).on("child_added", s => {
-            const d = s.val();
-            const div = document.createElement("div"); div.className = "live-entry";
+        rdb.ref("live").on("child_added", s => {
+            const d = s.val(), f = document.getElementById("live-feed");
+            const div = document.createElement("div"); div.className = "live-item";
             div.innerHTML = `<b>${d.u}</b> : ${d.at} (${d.p}) ${d.res}`;
-            const feed = document.getElementById("live-feed");
-            feed.prepend(div);
+            f.prepend(div);
         });
     }
 }
 
-// --- ÉCOUTEUR DE SESSION (IMPORTANT POUR LE BANDEAU) ---
+// Écouteur Session
 rdb.ref("config/active").on("value", s => {
-    const data = s.val();
-    const banner = document.getElementById("lesson-banner");
-    if (data && data.status) {
-        lesson = data.name;
-        banner.classList.remove("hidden");
+    const d = s.val(), b = document.getElementById("lesson-banner");
+    if (d && d.status) {
+        lesson = d.name; b.classList.remove("hidden");
         document.getElementById("cur-lesson-name").innerText = lesson;
-    } else {
-        banner.classList.add("hidden");
-    }
+    } else b.classList.add("hidden");
 });
-
-function ouvrirBilanFinal() {
-    document.getElementById("modal-overlay").classList.remove("hidden");
-    setTimeout(initRadar, 100);
-}
-
-function initRadar() {
-    const ctx = document.getElementById('radarChart').getContext('2d');
-    const vals = ['haut','bas','tronc','cardio'].map(z => Object.values(dataEleve).filter(d => d.z === z).length);
-    if (radarChartInstance) radarChartInstance.destroy();
-    radarChartInstance = new Chart(ctx, {
-        type: 'radar',
-        data: {
-            labels: ['Haut', 'Bas', 'Tronc', 'Cardio'],
-            datasets: [{ label: 'Ateliers', data: vals, backgroundColor: 'rgba(213,0,249,0.2)', borderColor: '#d500f9' }]
-        },
-        options: { scales: { r: { beginAtZero: true, max: 5 } } }
-    });
-}
-
-function confirmerEnvoi() {
-    const bilanTxt = document.getElementById("bilan-texte").value;
-    rdb.ref(`data/${lesson}/${user}`).set({ ateliers: dataEleve, bilan: bilanTxt, date: new Date().toLocaleDateString() }).then(() => {
-        alert("Bilan envoyé ! Bravo pour ta séance.");
-        localStorage.removeItem("session_" + user);
-        location.reload();
-    });
-}
 </script>
+
 </body>
 </html>
