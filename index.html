@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --haut: #00e676; --bas: #ff1744; --tronc: #ffd740; --cardio: #40c4ff;
@@ -15,151 +14,104 @@
             --border: rgba(255,255,255,0.1); --text: #f0f0f0; --muted: #888;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 30px; }
         .container { max-width: 500px; margin: auto; padding: 10px; }
-
-        .banner {
-            background: #1a1a1a; border-bottom: 2px solid var(--prof); padding: 12px; font-size: 14px;
-            font-weight: 700; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-
         .card { background: var(--surface); border-radius: 20px; padding: 18px; margin-bottom: 15px; border: 1px solid var(--border); }
-        h3, h4 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; margin: 0 0 10px 0; }
+        h3, h4 { font-family: 'Bebas Neue', sans-serif; margin: 0 0 10px 0; }
         
-        select, input, textarea {
-            width: 100%; padding: 14px; margin: 6px 0; border-radius: 12px; border: 1px solid var(--border);
-            background: var(--surface2); color: #fff; font-size: 16px; font-family: inherit;
-        }
-
-        button { width: 100%; padding: 15px; border-radius: 14px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; transition: transform 0.1s; margin-top: 5px; }
+        select, input, textarea { width: 100%; padding: 12px; margin: 5px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--surface2); color: #fff; font-size: 16px; }
+        button { width: 100%; padding: 15px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; margin-top: 5px; }
         .btn-primary { background: var(--haut); color: #000; }
         .btn-prof { background: var(--prof); color: #fff; }
         .btn-danger { background: var(--bas); color: #fff; }
-        .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); margin-top: 10px; }
+        .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
 
-        /* TABLEAU FEUILLE DE ROUTE */
-        .table-container { background: #000; border-radius: 15px; margin-top: 10px; border: 1px solid var(--border); overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; }
-        th { background: #1a1a1a; color: var(--muted); font-size: 9px; padding: 10px 5px; text-transform: uppercase; }
-        td { padding: 10px 5px; border-bottom: 1px solid #1a1a1a; text-align: center; color: #fff; }
-        
-        .badge { padding: 3px 6px; border-radius: 4px; font-size: 9px; font-weight: 900; color: #000; text-transform: uppercase; min-width: 50px; display: inline-block; }
-        .perf-cell { font-weight: 700; color: var(--haut); }
-        .empty-cell { color: #333; font-style: italic; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
+        th { background: #1a1a1a; color: var(--muted); padding: 8px; text-transform: uppercase; }
+        td { padding: 10px 5px; border-bottom: 1px solid #1a1a1a; text-align: center; }
+        .badge { padding: 3px 6px; border-radius: 4px; font-weight: 900; color: #000; font-size: 9px; display: inline-block; }
 
-        .live-feed { background: #000; border-radius: 12px; padding: 10px; font-family: monospace; font-size: 11px; height: 250px; overflow-y: auto; color: #00e676; border: 1px solid #222; }
+        /* --- STYLE D'IMPRESSION --- */
+        @media print {
+            @page { margin: 1cm; }
+            body { background: white !important; color: black !important; }
+            .container, .no-print, button, select, #lesson-banner { display: none !important; }
+            #print-zone { display: block !important; }
+            .page-eleve { 
+                page-break-after: always; /* Un élève par page */
+                border-bottom: 2px solid #000;
+                padding-bottom: 20px;
+                margin-bottom: 20px;
+            }
+            table { border: 1px solid #000 !important; width: 100%; margin-bottom: 20px; }
+            th, td { border: 1px solid #000 !important; color: black !important; padding: 8px; }
+            .badge { border: 1px solid #000 !important; background: transparent !important; color: black !important; }
+        }
+
+        #print-zone { display: none; }
         .hidden { display: none !important; }
-        .row { display: flex; gap: 8px; }
-        .row > * { flex: 1; }
+        .live-feed { background: #000; border-radius: 12px; padding: 10px; font-family: monospace; height: 150px; overflow-y: auto; color: var(--haut); border: 1px solid #222; font-size: 11px; }
     </style>
 </head>
 <body>
 
-<div id="lesson-banner" class="banner hidden">
-    <div style="width:10px; height:10px; background:var(--prof); border-radius:50%;"></div>
-    <span id="cur-lesson-name">---</span>
-</div>
-
 <div class="container">
-    <h2 style="text-align: center; font-family:'Bebas Neue'; letter-spacing:2px; color: var(--haut);">🏋️ EPS MUSCU CONNECT</h2>
+    <h2 style="text-align: center; font-family:'Bebas Neue'; color: var(--haut);">🏋️ EPS MUSCU CONNECT</h2>
 
     <div id="auth-screen" class="card">
         <h3>Connexion</h3>
-        <select id="classe" onchange="majEleves()">
-            <option value="">-- Classe --</option>
-            <option>3A</option><option>3B</option><option>3C</option><option>3D</option>
-        </select>
-        <select id="eleve"><option value="">-- Nom de l'élève --</option></select>
-        <button class="btn-primary" onclick="connexion()">COMMENCER</button>
+        <select id="classe" onchange="majEleves()"><option value="">-- Classe --</option><option>3A</option><option>3B</option></select>
+        <select id="eleve"><option value="">-- Nom --</option></select>
+        <button class="btn-primary" onclick="connexion()">ENTRER</button>
     </div>
 
     <div id="app-eleve" class="hidden">
         <div class="card" id="input-card">
-            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-                <span id="user-info" style="font-weight:700; color:var(--prof); font-size:14px;"></span>
-                <span onclick="location.reload()" style="font-size:11px; color:var(--muted); text-decoration:underline; cursor:pointer;">Quitter</span>
-            </div>
-
+            <span id="user-info" style="font-weight:700; color:var(--prof);"></span>
             <select id="atelier" onchange="majExercices()">
-                <option value="">-- Choisir Atelier --</option>
-                <optgroup label="💪 HAUT" data-zone="haut"><option>Pectoraux</option><option>Biceps</option><option>Triceps</option><option>Trapèzes</option></optgroup>
-                <optgroup label="🦵 BAS" data-zone="bas"><option>Quadriceps</option><option>Ischios</option><option>Fessiers</option><option>Mollets</option></optgroup>
-                <optgroup label="🧘 TRONC" data-zone="tronc"><option>Abdominaux</option><option>Obliques</option><option>Grand Dorsal</option></optgroup>
-                <optgroup label="❤️ CARDIO" data-zone="cardio"><option>Jumping Jack</option><option>Mountain Climber</option><option>Burpees</option></optgroup>
+                <option value="">-- Atelier --</option>
+                <option value="Pectoraux">Pectoraux</option>
+                <option value="Quadriceps">Quadriceps</option>
+                <option value="Abdominaux">Abdominaux</option>
             </select>
-            
-            <select id="exercice" onchange="majUI()" class="hidden"></select>
-            <select id="series">
-                <option value="">-- Séries --</option>
-                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
-            </select>
-
-            <div id="f-std" class="hidden">
-                <div class="row">
-                    <select id="kg"><option value="">Poids</option><option value="PDC">PDC</option></select>
-                    <input type="number" id="reps" placeholder="Reps (max 100)" inputmode="numeric">
-                </div>
-            </div>
-
-            <div id="f-alt" class="hidden"><input type="number" id="val-alt" placeholder="Reps ou Sec" inputmode="numeric"></div>
-
-            <div id="f-elastique" class="hidden">
-                <div class="row" style="margin-bottom:8px;">
-                    <button id="el-Vert" style="background:#27ae60;" onclick="selectElastique('Vert')">V</button>
-                    <button id="el-Rouge" style="background:#e74c3c;" onclick="selectElastique('Rouge')">R</button>
-                    <button id="el-Noir" style="background:#222;" onclick="selectElastique('Noir')">N</button>
-                </div>
-                <input type="hidden" id="val-elastique"><input type="number" id="reps-el" placeholder="Reps" inputmode="numeric">
-            </div>
-
-            <select id="ressenti">
-                <option value="">-- Ressenti --</option>
-                <option value="😄">😄 Facile</option><option value="🙂">🙂 Bien</option><option value="😫">😫 Dur</option>
-            </select>
-
-            <button class="btn-primary" onclick="sauverSérie()">VALIDER L'ATELIER</button>
+            <input type="number" id="reps" placeholder="Nombre de répétitions">
+            <button class="btn-primary" onclick="sauverSérie()">VALIDER SÉRIE</button>
         </div>
 
         <div class="card">
-            <h4>📋 MA FEUILLE DE ROUTE</h4>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Zone</th>
-                            <th>Atelier</th>
-                            <th>Performance</th>
-                            <th>Avis</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body">
-                        </tbody>
-                </table>
-            </div>
-            <button onclick="ouvrirBilanFinal()" class="btn-prof" style="margin-top:20px;">TERMINER & BILAN</button>
+            <h4>MON TABLEAU</h4>
+            <table>
+                <thead><tr><th>Zone</th><th>Atelier</th><th>Perf</th></tr></thead>
+                <tbody id="table-body"></tbody>
+            </table>
+            <textarea id="bilan-texte" style="margin-top:15px;" placeholder="Écris ton bilan de séance ici..."></textarea>
+            <button class="btn-prof" onclick="confirmerEnvoi()">ENVOYER AU PROF</button>
         </div>
     </div>
 
     <div id="app-prof" class="hidden">
-        <div class="card" style="border-top: 5px solid var(--prof);">
-            <h3>PROFESSEUR</h3>
-            <input type="text" id="lesson-input" placeholder="Nom de la leçon">
-            <div class="row">
-                <button class="btn-primary" onclick="setSession(true)">LANCER</button>
-                <button class="btn-danger" onclick="setSession(false)">STOP</button>
+        <div class="card" style="border-top: 4px solid var(--prof);">
+            <h3>ESPACE PROFESSEUR</h3>
+            <div id="live-feed" class="live-feed"></div>
+            
+            <div style="margin-top: 15px; display: grid; gap: 10px;">
+                <button class="btn-primary" onclick="imprimerTouteLaClasse()">🖨️ IMPRIMER TOUS LES BILANS</button>
+                <button class="btn-ghost" onclick="document.getElementById('fileInput').click()">📁 IMPORTER CSV ÉLÈVES</button>
+                <input type="file" id="fileInput" accept=".csv" class="hidden" onchange="importCSV(event)">
+                <button class="btn-danger" style="background:#333;" onclick="gestionDonnees()">🛠️ EFFACER LES DONNÉES</button>
+                <button class="btn-ghost" onclick="location.reload()">RETOUR ACCUEIL</button>
             </div>
-            <div id="live-feed" class="live-feed" style="margin-top:15px;"></div>
-            <button class="btn-ghost" onclick="document.getElementById('fileInput').click()">📁 IMPORTER CSV</button>
-            <input type="file" id="fileInput" accept=".csv" class="hidden" onchange="importCSV(event)">
-            <button class="btn-danger" style="background:#444;" onclick="gestionDonnees()">🛠️ GÉRER DONNÉES</button>
         </div>
     </div>
-
-    <span style="opacity:0.2; font-size:10px; text-align:center; display:block; margin-top:40px;" onclick="accessProf()">Admin</span>
+    
+    <span style="opacity:0.1; font-size:10px; cursor:pointer; display:block; text-align:center; margin-top:20px;" onclick="accessProf()">Admin Prof</span>
 </div>
 
+<div id="print-zone"></div>
+
 <script>
+// CONFIG FIREBASE (Utilise ta config actuelle)
 const firebaseConfig = {
   apiKey: "AIzaSyCEYWqZ9GGwWHZ4mEUS4HgaZL03hXlKpcE",
   authDomain: "muscu-3e.firebaseapp.com",
@@ -169,154 +121,107 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const rdb = firebase.database();
 
-let user = "", lesson = "", dataEleve = {};
-let listeEleves = Array.from({length: 30}, (_, i) => "Élève " + (i + 1));
-
-const EXERCICES = {
-    "Pectoraux": { zone:"haut", list:["Pompes","Développé Couché","Butterfly"] },
-    "Biceps": { zone:"haut", list:["Curl Biceps","Curl Marteau","Curl TRX"] },
-    "Triceps": { zone:"haut", list:["Triceps Extension","Triceps Kicks","Dips"] },
-    "Trapèzes": { zone:"haut", list:["Tirage Bras Tendus","Tirage Kettlebell","Presse Épaule"] },
-    "Quadriceps": { zone:"bas", list:["Squats","Chaise","Squats Sautés"] },
-    "Ischios": { zone:"bas", list:["Relevé de Bassin","Relevé de Bassin 1 Jambe","Relevé de Bassin Dynamique"] },
-    "Fessiers": { zone:"bas", list:["Fentes Bulgares","Fentes","Fentes Sautées"] },
-    "Mollets": { zone:"bas", list:["Montées Descentes","Montées avec Poids","Montées Kettlebell"] },
-    "Abdominaux": { zone:"tronc", list:["Crunchs","Sit-Up","Hollow"] },
-    "Obliques": { zone:"tronc", list:["Russian Twist","Touche Talons","Crunch Pédalos"] },
-    "Grand Dorsal": { zone:"tronc", list:["Arlaud","Arlaud Dynamique","Rameur Élastique"] },
-    "Jumping Jack": { zone:"cardio", list:["Jumping Jack","Star Jump","Corde à Sauter"] },
-    "Mountain Climber": { zone:"cardio", list:["Mountain Climber Bloqué","Mountain Climber Dynamique","Mountain Climber Crossfit"] },
-    "Burpees": { zone:"cardio", list:["Marche de l'Ours","Sprawl","Burpees"] }
-};
-
-const ALT_EXOS = ["Crunchs","Sit-Up","Hollow","Russian Twist","Touche Talons","Crunch Pédalos","Arlaud","Arlaud Dynamique","Chaise","Jumping Jack","Star Jump","Corde à Sauter","Mountain Climber Bloqué","Mountain Climber Dynamique","Mountain Climber Crossfit","Marche de l'Ours","Sprawl","Burpees","Relevé de Bassin","Relevé de Bassin 1 Jambe","Relevé de Bassin Dynamique","Fentes Bulgares","Fentes","Fentes Sautées","Squats Sautés","Montées Descentes"];
-const ELASTIQUE_EXOS = ["Dips","Tirage Bras Tendus","Rameur Élastique"];
-
-// Charge max 30kg
-for(let i=1; i<=30; i++) { document.getElementById("kg").innerHTML += `<option value="${i}">${i} kg</option>`; }
+let user = "", dataEleve = {}, currentLesson = "Seance_1", listeEleves = ["Elève 1", "Elève 2"];
 
 function majEleves() {
     const s = document.getElementById("eleve");
-    s.innerHTML = '<option value="">-- Choisir son nom --</option>';
+    s.innerHTML = '<option value="">-- Nom --</option>';
     listeEleves.forEach(e => s.innerHTML += `<option value="${e}">${e}</option>`);
 }
 
 function connexion() {
     const c = document.getElementById("classe").value, e = document.getElementById("eleve").value;
-    if (!c || !e) return;
+    if(!c || !e) return;
     user = c + "_" + e;
     document.getElementById("auth-screen").classList.add("hidden");
     document.getElementById("app-eleve").classList.remove("hidden");
     document.getElementById("user-info").innerText = user;
-    
-    const saved = localStorage.getItem("session_" + user);
-    if (saved) dataEleve = JSON.parse(saved);
-    
-    initTableauStatique(); // On génère la liste complète dès maintenant
-}
-
-function initTableauStatique() {
-    const b = document.getElementById("table-body");
-    b.innerHTML = "";
-    
-    // Pour chaque atelier défini dans la config
-    Object.keys(EXERCICES).forEach(at => {
-        const zone = EXERCICES[at].zone;
-        const record = dataEleve[at] || null;
-        
-        const perf = record ? record.p : "<span class='empty-cell'>---</span>";
-        const avis = record ? record.res : "";
-        
-        b.innerHTML += `
-            <tr id="row-${at.replace(/\s/g, '')}">
-                <td><span class="badge" style="background:var(--${zone})">${zone}</span></td>
-                <td style="font-weight:700">${at}</td>
-                <td class="perf-cell">${perf}</td>
-                <td>${avis}</td>
-            </tr>`;
-    });
-}
-
-function majExercices() {
-    const at = document.getElementById("atelier").value, exSel = document.getElementById("exercice");
-    if (!at) return;
-    const { zone, list } = EXERCICES[at];
-    exSel.innerHTML = '<option value="">-- Exercice --</option>' + list.map(e => `<option value="${e}">${e}</option>`).join("");
-    exSel.classList.remove("hidden");
-    document.getElementById("input-card").style.borderTop = `6px solid var(--${zone})`;
-}
-
-function majUI() {
-    const ex = document.getElementById("exercice").value;
-    document.getElementById("f-std").className = (!ALT_EXOS.includes(ex) && !ELASTIQUE_EXOS.includes(ex)) ? "" : "hidden";
-    document.getElementById("f-alt").className = ALT_EXOS.includes(ex) ? "" : "hidden";
-    document.getElementById("f-elastique").className = ELASTIQUE_EXOS.includes(ex) ? "" : "hidden";
-}
-
-function selectElastique(c) {
-    document.getElementById("val-elastique").value = c;
-    ["Vert","Rouge","Noir"].forEach(col => {
-        const btn = document.getElementById("el-"+col);
-        if(btn) btn.style.boxShadow = "none";
-    });
-    const selected = document.getElementById("el-"+c);
-    if(selected) selected.style.boxShadow = "0 0 0 3px #fff";
 }
 
 function sauverSérie() {
-    const at = document.getElementById("atelier").value, ex = document.getElementById("exercice").value, res = document.getElementById("ressenti").value, ser = document.getElementById("series").value;
-    if (!at || !ex || !res || !ser) { alert("Champs incomplets !"); return; }
-    
-    let p = "";
-    if (ELASTIQUE_EXOS.includes(ex)) { 
-        p = `${ser}x (${document.getElementById("val-elastique").value}) ${document.getElementById("reps-el").value}r`; 
-    } else if (ALT_EXOS.includes(ex)) { 
-        p = `${ser}x ${document.getElementById("val-alt").value}r`; 
-    } else {
-        const kg = document.getElementById("kg").value, r = document.getElementById("reps").value;
-        p = `${ser}x ${kg} (${r}r)`;
-    }
-
-    dataEleve[at] = { z: EXERCICES[at].zone, ex, p, res };
-    localStorage.setItem("session_" + user, JSON.stringify(dataEleve));
-    rdb.ref("live").push({ u: user, at, p, res });
-    
-    initTableauStatique(); // On rafraîchit le tableau avec la nouvelle valeur
-    resetFields();
+    const at = document.getElementById("atelier").value;
+    const r = document.getElementById("reps").value;
+    if(!at || !r) return;
+    dataEleve[at] = { z: "haut", p: r + " reps", res: "🙂" };
+    rdb.ref("live").push({ u: user, at, p: r });
+    majTableau();
 }
 
-function resetFields() {
-    document.getElementById("series").value = "";
-    document.getElementById("kg").value = "";
-    document.getElementById("reps").value = "";
-    document.getElementById("val-alt").value = "";
-    document.getElementById("reps-el").value = "";
-    document.getElementById("ressenti").value = "";
+function majTableau() {
+    const b = document.getElementById("table-body"); b.innerHTML = "";
+    Object.keys(dataEleve).forEach(at => {
+        const d = dataEleve[at];
+        b.innerHTML += `<tr><td><span class="badge" style="background:var(--${d.z})">${d.z}</span></td><td>${at}</td><td>${d.p}</td></tr>`;
+    });
+}
+
+function confirmerEnvoi() {
+    const bilan = document.getElementById("bilan-texte").value;
+    rdb.ref(`data/${currentLesson}/${user}`).set({ ateliers: dataEleve, bilan: bilan, date: new Date().toLocaleDateString() })
+    .then(() => { alert("Séance terminée et envoyée !"); location.reload(); });
 }
 
 function accessProf() {
-    if (prompt("Code :") === "16170") {
+    if(prompt("Code")==="16170") {
         document.getElementById("auth-screen").classList.add("hidden");
-        document.getElementById("app-eleve").classList.add("hidden");
         document.getElementById("app-prof").classList.remove("hidden");
         rdb.ref("live").on("child_added", s => {
             const d = s.val(), f = document.getElementById("live-feed");
-            const div = document.createElement("div"); 
-            div.innerHTML = `<b>${d.u}</b> : ${d.at} (${d.p}) ${d.res}`;
+            const div = document.createElement("div"); div.innerHTML = `<b>${d.u}</b>: ${d.at} (${d.p})`;
             f.prepend(div);
         });
     }
 }
 
-function setSession(active) {
-    const name = document.getElementById("lesson-input").value || "Séance";
-    rdb.ref("config/active").set({ status: active, name: name });
+// --- LOGIQUE D'IMPRESSION GROUPÉE ---
+function imprimerTouteLaClasse() {
+    rdb.ref(`data/${currentLesson}`).once("value", s => {
+        const classData = s.val();
+        if(!classData) { alert("Aucune donnée enregistrée pour cette leçon."); return; }
+        
+        let printHTML = `<h1 style="text-align:center; color: black;">COMPTE-RENDU DE CLASSE - ${currentLesson}</h1>`;
+        
+        for (let userId in classData) {
+            const eleve = classData[userId];
+            printHTML += `
+                <div class="page-eleve">
+                    <h2 style="border-bottom: 2px solid #000;">Élève : ${userId.replace('_',' ')}</h2>
+                    <p>Date : ${eleve.date || 'Non renseignée'}</p>
+                    
+                    <table border="1">
+                        <thead>
+                            <tr><th>Atelier</th><th>Performance</th><th>Ressenti</th></tr>
+                        </thead>
+                        <tbody>`;
+            
+            for (let at in eleve.ateliers) {
+                const a = eleve.ateliers[at];
+                printHTML += `<tr><td>${at}</td><td>${a.p}</td><td>${a.res || '-'}</td></tr>`;
+            }
+
+            printHTML += `
+                        </tbody>
+                    </table>
+                    <div style="margin-top:10px;">
+                        <strong>Bilan de l'élève :</strong>
+                        <p style="border: 1px solid #ccc; padding: 10px; background: #f9f9f9;">${eleve.bilan || "Aucun bilan rédigé."}</p>
+                    </div>
+                    <div style="margin-top:20px; font-style: italic;">
+                        <strong>Commentaires du professeur :</strong>
+                        <div style="border-bottom: 1px dashed #000; height: 30px;"></div>
+                    </div>
+                </div>`;
+        }
+        
+        document.getElementById("print-zone").innerHTML = printHTML;
+        window.print();
+    });
 }
 
 function gestionDonnees() {
-    const m = prompt("1: Effacer Live | 2: Effacer Données Leçon");
+    const m = prompt("1: Effacer LIVE | 2: Effacer TOUTE LA LEÇON");
     if(m === "1") rdb.ref("live").remove();
-    if(m === "2") { if(confirm("Supprimer tout ?")) rdb.ref(`data/${lesson}`).remove(); }
+    if(m === "2") { if(confirm("Voulez-vous vraiment TOUT effacer ?")) rdb.ref(`data/${currentLesson}`).remove(); }
 }
 
 function importCSV(event) {
@@ -326,20 +231,10 @@ function importCSV(event) {
         const lines = e.target.result.split('\n');
         listeEleves = lines.map(l => l.split(',')[0].trim()).filter(l => l !== "");
         majEleves();
-        alert("Import réussi !");
+        alert("Liste des élèves mise à jour !");
     };
     reader.readAsText(file);
 }
-
-rdb.ref("config/active").on("value", s => {
-    const d = s.val();
-    if (d && d.status) {
-        lesson = d.name; document.getElementById("lesson-banner").classList.remove("hidden");
-        document.getElementById("cur-lesson-name").innerText = lesson;
-    }
-});
-
-majEleves();
 </script>
 </body>
 </html>
