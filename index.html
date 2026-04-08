@@ -17,65 +17,27 @@
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
 
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 20px; }
 
         .container { max-width: 500px; margin: auto; padding: 10px; }
 
         .banner {
-            background: #1a1a1a;
-            border-bottom: 2px solid var(--prof);
-            padding: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            background: #1a1a1a; border-bottom: 2px solid var(--prof); padding: 12px; font-size: 14px;
+            font-weight: 700; position: sticky; top: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .banner-dot { width: 10px; height: 10px; background: var(--prof); border-radius: 50%; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% {opacity:1} 50% {opacity:0.3} 100% {opacity:1} }
 
-        .card {
-            background: var(--surface);
-            border-radius: 20px;
-            padding: 18px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border);
-        }
+        .card { background: var(--surface); border-radius: 20px; padding: 18px; margin-bottom: 15px; border: 1px solid var(--border); }
 
         h3, h4 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; margin-top: 0; }
         
         select, input, textarea {
-            width: 100%;
-            padding: 14px;
-            margin: 6px 0;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: var(--surface2);
-            color: #fff;
-            font-size: 16px;
-            font-family: inherit;
+            width: 100%; padding: 14px; margin: 6px 0; border-radius: 12px; border: 1px solid var(--border);
+            background: var(--surface2); color: #fff; font-size: 16px; font-family: inherit;
         }
 
-        button {
-            width: 100%;
-            padding: 15px;
-            border-radius: 14px;
-            border: none;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
+        button { width: 100%; padding: 15px; border-radius: 14px; border: none; font-weight: 700; font-size: 15px; cursor: pointer; transition: transform 0.1s; margin-top: 5px; }
         button:active { transform: scale(0.96); }
         .btn-primary { background: var(--haut); color: #000; }
         .btn-prof { background: var(--prof); color: #fff; }
@@ -87,12 +49,13 @@
         .zc-num { font-family: 'Bebas Neue'; font-size: 20px; line-height: 1; }
         .zc-lbl { font-size: 8px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
 
-        .table-container { overflow-x: auto; margin-top: 10px; }
+        /* TABLEAU OPTIMISÉ */
+        .table-container { background: #111; border-radius: 15px; padding: 5px; margin-top: 10px; border: 1px solid var(--border); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        th { text-align: center; color: var(--muted); font-size: 10px; padding: 10px 5px; border-bottom: 1px solid var(--border); text-transform: uppercase; }
-        td { padding: 12px 4px; border-bottom: 1px solid var(--border); text-align: center; }
+        th { text-align: center; color: var(--muted); font-size: 9px; padding: 10px 4px; border-bottom: 1px solid var(--border); text-transform: uppercase; }
+        td { padding: 10px 4px; border-bottom: 1px solid #1a1a1a; text-align: center; font-weight: 500; }
         
-        .badge-zone { padding: 3px 6px; border-radius: 4px; font-size: 9px; font-weight: 800; color: #000; text-transform: uppercase; }
+        .badge-zone { padding: 4px 8px; border-radius: 6px; font-size: 9px; font-weight: 900; color: #000; text-transform: uppercase; display: inline-block; }
 
         .rm-feedback { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 10px; margin: 8px 0; font-size: 12px; border-left: 4px solid var(--haut); display: none; }
 
@@ -124,15 +87,15 @@
             <option value="">-- Classe --</option>
             <option>3A</option><option>3B</option><option>3C</option><option>3D</option>
         </select>
-        <select id="eleve"><option value="">-- N° Élève --</option></select>
-        <button class="btn-primary" onclick="connexion()" style="margin-top:10px;">ENTRER</button>
+        <select id="eleve"><option value="">-- Liste des élèves --</option></select>
+        <button class="btn-primary" onclick="connexion()">ENTRER DANS LA SÉANCE</button>
     </div>
 
     <div id="app-eleve" class="hidden">
         <div class="card" id="input-card">
             <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
                 <span id="user-info" style="font-weight:700; color:var(--prof); font-size:14px;"></span>
-                <span onclick="location.reload()" style="font-size:11px; color:var(--muted); text-decoration:underline;">Quitter</span>
+                <span onclick="location.reload()" style="font-size:11px; color:var(--muted); text-decoration:underline; cursor:pointer;">Quitter</span>
             </div>
 
             <div class="zone-counters">
@@ -165,7 +128,7 @@
                 <option value="1">1 série</option><option value="2">2 séries</option>
                 <option value="3">3 séries</option><option value="4">4 séries</option>
                 <option value="5">5 séries</option><option value="6">6 séries</option>
-                <option value="7">7 séries</option><option value="8">8 séries (max)</option>
+                <option value="7">7 séries</option><option value="8">8 séries</option>
             </select>
 
             <div id="f-std" class="hidden">
@@ -179,7 +142,7 @@
             </div>
 
             <div id="f-alt" class="hidden">
-                <input type="number" id="val-alt" placeholder="Reps ou Secondes (max 100)" inputmode="numeric">
+                <input type="number" id="val-alt" placeholder="Reps ou Sec" inputmode="numeric">
             </div>
 
             <div id="f-elastique" class="hidden">
@@ -189,7 +152,7 @@
                     <button id="el-Noir" style="background:#222; font-size:11px;" onclick="selectElastique('Noir')">NOIR</button>
                 </div>
                 <input type="hidden" id="val-elastique">
-                <input type="number" id="reps-el" placeholder="Répétitions (max 100)" inputmode="numeric">
+                <input type="number" id="reps-el" placeholder="Répétitions" inputmode="numeric">
             </div>
 
             <select id="ressenti">
@@ -200,18 +163,18 @@
             </select>
 
             <div class="rm-feedback" id="rm-feedback"></div>
-            <button class="btn-primary" onclick="sauverSérie()" style="margin-top:10px;">ENREGISTRER MA SÉRIE</button>
+            <button class="btn-primary" onclick="sauverSérie()" style="margin-top:10px;">ENREGISTRER</button>
         </div>
 
         <div class="card">
-            <h4>📊 Mon Récapitulatif</h4>
+            <h4>📊 Historique de séance</h4>
             <div class="table-container">
-                <table>
+                <table id="main-table">
                     <thead>
                         <tr>
                             <th>Zone</th>
                             <th>Atelier</th>
-                            <th>Performance</th>
+                            <th>Perf</th>
                             <th>1RM</th>
                             <th>Avis</th>
                         </tr>
@@ -219,21 +182,27 @@
                     <tbody id="table-body"></tbody>
                 </table>
             </div>
-            <button onclick="ouvrirBilanFinal()" class="btn-prof" style="margin-top:20px;">📤 TERMINER & BILAN FINAL</button>
+            <button onclick="ouvrirBilanFinal()" class="btn-prof" style="margin-top:20px;">📤 TERMINER & BILAN</button>
         </div>
     </div>
 
     <div id="app-prof" class="hidden">
         <div class="card" style="border-top: 5px solid var(--prof);">
-            <h3>Espace Enseignant</h3>
+            <h3>Interface Professeur</h3>
             <input type="text" id="lesson-input" placeholder="Titre de la leçon">
             <div class="row">
-                <button class="btn-primary" onclick="setSession(true)">LANCER LA CLASSE</button>
-                <button class="btn-danger" onclick="setSession(false)">ARRETER</button>
+                <button class="btn-primary" onclick="setSession(true)">LANCER</button>
+                <button class="btn-danger" onclick="setSession(false)">STOP</button>
             </div>
-            <h4 style="margin-top:20px;">Live Feed</h4>
+            <h4 style="margin-top:20px;">Flux d'activité Live</h4>
             <div id="live-feed" class="live-feed"></div>
-            <button onclick="location.reload()" class="btn-ghost">Mode Élève</button>
+            
+            <div style="margin-top: 20px; display: grid; gap: 10px;">
+                <button class="btn-ghost" onclick="document.getElementById('fileInput').click()">📁 IMPORTER ÉLÈVES (CSV)</button>
+                <input type="file" id="fileInput" accept=".csv" class="hidden" onchange="importCSV(event)">
+                <button class="btn-danger" style="background: #333;" onclick="ouvrirGestionDonnees()">🛠️ GÉRER LES DONNÉES</button>
+                <button onclick="location.reload()" class="btn-ghost">Sortir</button>
+            </div>
         </div>
     </div>
 
@@ -242,12 +211,12 @@
 
 <div id="modal-overlay" class="modal-overlay hidden">
     <div class="modal-box">
-        <h3 style="text-align:center; font-size:22px;">TON BILAN DE SÉANCE</h3>
+        <h3 style="text-align:center; font-size:22px;">TON BILAN</h3>
         <div class="chart-container"><canvas id="radarChart"></canvas></div>
-        <p style="font-weight:700; margin-bottom:5px; font-size:14px;">Note ton bilan de la leçon du jour :</p>
-        <textarea id="bilan-texte" rows="4" placeholder="Tape ton texte ici..."></textarea>
-        <button onclick="confirmerEnvoi()" class="btn-prof">TRANSMETTRE AU PROFESSEUR</button>
-        <button onclick="document.getElementById('modal-overlay').classList.add('hidden')" class="btn-ghost">MODIFIER MES DONNÉES</button>
+        <p style="font-weight:700; font-size:14px;">Note ton bilan de la leçon du jour :</p>
+        <textarea id="bilan-texte" rows="4"></textarea>
+        <button onclick="confirmerEnvoi()" class="btn-prof">TRANSMETTRE AU PROF</button>
+        <button onclick="document.getElementById('modal-overlay').classList.add('hidden')" class="btn-ghost">RETOUR</button>
     </div>
 </div>
 
@@ -265,10 +234,10 @@ firebase.initializeApp(firebaseConfig);
 const rdb = firebase.database();
 
 let user = "", lesson = "", dataEleve = {}, radarChartInstance = null;
+let listeEleves = Array.from({length: 30}, (_, i) => i + 1);
 
 const ALT_EXOS = ["Crunchs","Sit-Up","Hollow","Russian Twist","Touche Talons","Crunch Pédalos","Arlaud","Arlaud Dynamique","Chaise","Jumping Jack","Star Jump","Corde à Sauter","Mountain Climber Bloqué","Mountain Climber Dynamique","Mountain Climber Crossfit","Marche de l'Ours","Sprawl","Burpees","Relevé de Bassin","Relevé de Bassin 1 Jambe","Relevé de Bassin Dynamique","Fentes Bulgares","Fentes","Fentes Sautées","Squats Sautés","Montées Descentes"];
 const ELASTIQUE_EXOS = ["Dips","Tirage Bras Tendus","Rameur Élastique"];
-
 const EXERCICES = {
     "Pectoraux": { zone:"haut", list:["Pompes","Développé Couché","Butterfly"] },
     "Biceps": { zone:"haut", list:["Curl Biceps","Curl Marteau","Curl TRX"] },
@@ -286,13 +255,24 @@ const EXERCICES = {
     "Burpees": { zone:"cardio", list:["Marche de l'Ours","Sprawl","Burpees"] }
 };
 
-// LIMITE CHARGE MAX : 30kg
 for(let i=1; i<=30; i++) { document.getElementById("kg").innerHTML += `<option value="${i}">${i} kg</option>`; }
 
 function majEleves() {
     const s = document.getElementById("eleve");
-    s.innerHTML = '<option value="">-- N° --</option>';
-    for (let i = 1; i <= 30; i++) s.innerHTML += `<option value="${i}">${i}</option>`;
+    s.innerHTML = '<option value="">-- Sélectionne ton nom --</option>';
+    listeEleves.forEach(e => s.innerHTML += `<option value="${e}">${e}</option>`);
+}
+
+function importCSV(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const lines = e.target.result.split('\n');
+        listeEleves = lines.map(l => l.split(',')[0].trim()).filter(l => l !== "");
+        majEleves();
+        alert("Liste des élèves mise à jour !");
+    };
+    reader.readAsText(file);
 }
 
 function connexion() {
@@ -333,36 +313,35 @@ function validateInputs() {
     const kg = document.getElementById("kg").value, reps = Number(document.getElementById("reps").value), fb = document.getElementById("rm-feedback");
     if (kg && reps > 0) {
         let label = "", color = "";
-        if (reps <= 6) { label = "OBJECTIF : FORCE"; color = "var(--bas)"; }
-        else if (reps <= 12) { label = "OBJECTIF : VOLUME"; color = "var(--prof)"; }
-        else { label = "OBJECTIF : TONIFICATION"; color = "var(--haut)"; }
+        if (reps <= 6) { label = "FORCE"; color = "var(--bas)"; }
+        else if (reps <= 12) { label = "VOLUME"; color = "var(--prof)"; }
+        else { label = "TONIFICATION"; color = "var(--haut)"; }
         fb.style.display = "block"; fb.style.borderLeftColor = color;
-        fb.innerHTML = `<b style="color:${color}">${label}</b>`;
+        fb.innerHTML = `<b style="color:${color}">OBJECTIF : ${label}</b>`;
     } else fb.style.display = "none";
 }
 
 function sauverSérie() {
     const at = document.getElementById("atelier").value, ex = document.getElementById("exercice").value, res = document.getElementById("ressenti").value, ser = document.getElementById("series").value;
-    if (!at || !ex || !res || !ser) { alert("Complète tous les champs !"); return; }
+    if (!at || !ex || !res || !ser) { alert("Champs manquants !"); return; }
     
     let p = "", rm = "-", valReps = 0;
     const z = EXERCICES[at].zone;
 
-    // VERIF LIMITE REPS 100
     if (ELASTIQUE_EXOS.includes(ex)) { 
         valReps = Number(document.getElementById("reps-el").value);
-        p = `${ser} s. × Éla.${document.getElementById("val-elastique").value} (${valReps} reps)`; 
+        p = `${ser}s x Éla.${document.getElementById("val-elastique").value} (${valReps})`; 
     } else if (ALT_EXOS.includes(ex)) { 
         valReps = Number(document.getElementById("val-alt").value);
-        p = `${ser} s. × ${valReps} reps/sec`; 
+        p = `${ser}s x ${valReps} reps`; 
     } else {
         const kg = document.getElementById("kg").value;
         valReps = Number(document.getElementById("reps").value);
-        p = `${ser} s. × ${kg === "PDC" ? "PDC" : kg + "kg"} (${valReps} reps)`;
-        if (kg !== "PDC" && valReps <= 20) rm = Math.round(kg / (1.0278 - 0.0278 * valReps)) + " kg";
+        p = `${ser}s x ${kg === "PDC" ? "PDC" : kg + "kg"} (${valReps})`;
+        if (kg !== "PDC" && valReps <= 20) rm = Math.round(kg / (1.0278 - 0.0278 * valReps)) + "kg";
     }
 
-    if(valReps > 100) { alert("Maximum 100 répétitions !"); return; }
+    if(valReps > 100) { alert("Max 100 reps !"); return; }
 
     dataEleve[at] = { z, ex, p, rm, res };
     localStorage.setItem("session_" + user, JSON.stringify(dataEleve));
@@ -379,7 +358,6 @@ function resetFields() {
     document.getElementById("val-alt").value = "";
     document.getElementById("reps-el").value = "";
     document.getElementById("ressenti").value = "";
-    document.getElementById("rm-feedback").style.display = "none";
 }
 
 function initTableau() {
@@ -387,7 +365,14 @@ function initTableau() {
     b.innerHTML = "";
     Object.keys(dataEleve).forEach(at => {
         const d = dataEleve[at];
-        b.innerHTML += `<tr><td><span class="badge-zone" style="background:var(--${d.z})">${d.z}</span></td><td style="font-weight:700">${at}</td><td style="color:var(--haut); font-weight:700">${d.p}</td><td style="color:var(--muted)">${d.rm}</td><td>${d.res}</td></tr>`;
+        b.innerHTML += `
+            <tr>
+                <td><span class="badge-zone" style="background:var(--${d.z})">${d.z}</span></td>
+                <td style="font-weight:700">${at}</td>
+                <td style="color:var(--haut)">${d.p}</td>
+                <td style="color:var(--muted)">${d.rm}</td>
+                <td>${d.res}</td>
+            </tr>`;
     });
     updateStats();
 }
@@ -396,6 +381,19 @@ function updateStats() {
     const c = { haut:0, bas:0, tronc:0, cardio:0 };
     Object.values(dataEleve).forEach(d => c[d.z]++);
     for(let z in c) document.getElementById("cnt-"+z).innerText = c[z];
+}
+
+function ouvrirGestionDonnees() {
+    const mode = prompt("QUE VOULEZ-VOUS EFFACER ?\n1 : Le flux LIVE uniquement\n2 : TOUTES les données de la leçon en cours");
+    if (mode === "1") {
+        rdb.ref("live").remove();
+        alert("Flux Live vidé.");
+    } else if (mode === "2") {
+        if(confirm("Action irréversible : Effacer tous les bilans de '" + lesson + "' ?")) {
+            rdb.ref(`data/${lesson}`).remove();
+            alert("Données de la leçon effacées.");
+        }
+    }
 }
 
 function ouvrirBilanFinal() {
@@ -412,11 +410,7 @@ function drawRadar() {
         data: {
             labels: ['Haut', 'Bas', 'Tronc', 'Cardio'],
             datasets: [{
-                data: vals,
-                backgroundColor: 'rgba(211, 0, 249, 0.2)',
-                borderColor: '#d500f9',
-                borderWidth: 3,
-                pointBackgroundColor: '#d500f9'
+                data: vals, backgroundColor: 'rgba(211, 0, 249, 0.2)', borderColor: '#d500f9', borderWidth: 3
             }]
         },
         options: { scales: { r: { min: 0, max: 5, ticks: { display: false } } }, plugins: { legend: { display: false } } }
@@ -426,7 +420,7 @@ function drawRadar() {
 function confirmerEnvoi() {
     const bilan = document.getElementById("bilan-texte").value;
     rdb.ref(`data/${lesson}/${user}`).set({ ateliers: dataEleve, bilan: bilan, date: new Date().toLocaleDateString() }).then(() => {
-        alert("Séance enregistrée !");
+        alert("Envoyé au professeur !");
         localStorage.removeItem("session_" + user);
         location.reload();
     });
@@ -440,6 +434,7 @@ function setSession(active) {
 
 function accessProf() {
     if (prompt("Code :") === "16170") {
+        document.getElementById("auth-screen").classList.add("hidden");
         document.getElementById("app-eleve").classList.add("hidden");
         document.getElementById("app-prof").classList.remove("hidden");
         rdb.ref("live").on("child_added", s => {
@@ -458,6 +453,8 @@ rdb.ref("config/active").on("value", s => {
         document.getElementById("cur-lesson-name").innerText = lesson;
     } else b.classList.add("hidden");
 });
+
+majEleves();
 </script>
 </body>
 </html>
