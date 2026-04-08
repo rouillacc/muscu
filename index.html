@@ -82,36 +82,19 @@
         .btn-danger { background: var(--bas); color: #fff; }
         .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); margin-top: 10px; }
 
-        /* Compteurs en haut */
         .zone-counters { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
         .zone-counter { background: var(--surface2); padding: 8px; border-radius: 12px; text-align: center; border-bottom: 3px solid transparent; }
         .zc-num { font-family: 'Bebas Neue'; font-size: 20px; line-height: 1; }
         .zc-lbl { font-size: 8px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
 
-        /* Tableau stylisé */
         .table-container { overflow-x: auto; margin-top: 10px; }
         table { width: 100%; border-collapse: collapse; font-size: 12px; }
         th { text-align: center; color: var(--muted); font-size: 10px; padding: 10px 5px; border-bottom: 1px solid var(--border); text-transform: uppercase; }
         td { padding: 12px 4px; border-bottom: 1px solid var(--border); text-align: center; }
         
-        .badge-zone { 
-            padding: 3px 6px; 
-            border-radius: 4px; 
-            font-size: 9px; 
-            font-weight: 800; 
-            color: #000;
-            text-transform: uppercase;
-        }
+        .badge-zone { padding: 3px 6px; border-radius: 4px; font-size: 9px; font-weight: 800; color: #000; text-transform: uppercase; }
 
-        .rm-feedback { 
-            background: rgba(255,255,255,0.05); 
-            border-radius: 10px; 
-            padding: 10px; 
-            margin: 8px 0; 
-            font-size: 12px; 
-            border-left: 4px solid var(--haut);
-            display: none;
-        }
+        .rm-feedback { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 10px; margin: 8px 0; font-size: 12px; border-left: 4px solid var(--haut); display: none; }
 
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; padding: 15px; display: flex; align-items: center; justify-content: center; }
         .modal-box { background: #fff; color: #000; width: 100%; border-radius: 24px; padding: 20px; max-height: 95vh; overflow-y: auto; }
@@ -177,18 +160,26 @@
             
             <select id="exercice" onchange="majUI()" class="hidden"></select>
 
+            <select id="series">
+                <option value="">-- Nombre de séries --</option>
+                <option value="1">1 série</option><option value="2">2 séries</option>
+                <option value="3">3 séries</option><option value="4">4 séries</option>
+                <option value="5">5 séries</option><option value="6">6 séries</option>
+                <option value="7">7 séries</option><option value="8">8 séries (max)</option>
+            </select>
+
             <div id="f-std" class="hidden">
                 <div class="row">
                     <select id="kg" onchange="validateInputs()">
                         <option value="">Charge</option>
                         <option value="PDC">PDC</option>
                     </select>
-                    <input type="number" id="reps" placeholder="Reps" inputmode="numeric" oninput="validateInputs()">
+                    <input type="number" id="reps" placeholder="Reps (max 100)" inputmode="numeric" oninput="validateInputs()">
                 </div>
             </div>
 
             <div id="f-alt" class="hidden">
-                <input type="number" id="val-alt" placeholder="Reps ou Secondes" inputmode="numeric">
+                <input type="number" id="val-alt" placeholder="Reps ou Secondes (max 100)" inputmode="numeric">
             </div>
 
             <div id="f-elastique" class="hidden">
@@ -198,7 +189,7 @@
                     <button id="el-Noir" style="background:#222; font-size:11px;" onclick="selectElastique('Noir')">NOIR</button>
                 </div>
                 <input type="hidden" id="val-elastique">
-                <input type="number" id="reps-el" placeholder="Nombre de répétitions" inputmode="numeric">
+                <input type="number" id="reps-el" placeholder="Répétitions (max 100)" inputmode="numeric">
             </div>
 
             <select id="ressenti">
@@ -235,12 +226,12 @@
     <div id="app-prof" class="hidden">
         <div class="card" style="border-top: 5px solid var(--prof);">
             <h3>Espace Enseignant</h3>
-            <input type="text" id="lesson-input" placeholder="Titre de la leçon (ex: Muscu n°1)">
+            <input type="text" id="lesson-input" placeholder="Titre de la leçon">
             <div class="row">
                 <button class="btn-primary" onclick="setSession(true)">LANCER LA CLASSE</button>
                 <button class="btn-danger" onclick="setSession(false)">ARRETER</button>
             </div>
-            <h4 style="margin-top:20px;">Activités en temps réel</h4>
+            <h4 style="margin-top:20px;">Live Feed</h4>
             <div id="live-feed" class="live-feed"></div>
             <button onclick="location.reload()" class="btn-ghost">Mode Élève</button>
         </div>
@@ -295,7 +286,8 @@ const EXERCICES = {
     "Burpees": { zone:"cardio", list:["Marche de l'Ours","Sprawl","Burpees"] }
 };
 
-for(let i=1; i<=150; i++) { document.getElementById("kg").innerHTML += `<option value="${i}">${i} kg</option>`; }
+// LIMITE CHARGE MAX : 30kg
+for(let i=1; i<=30; i++) { document.getElementById("kg").innerHTML += `<option value="${i}">${i} kg</option>`; }
 
 function majEleves() {
     const s = document.getElementById("eleve");
@@ -350,21 +342,27 @@ function validateInputs() {
 }
 
 function sauverSérie() {
-    const at = document.getElementById("atelier").value, ex = document.getElementById("exercice").value, res = document.getElementById("ressenti").value;
-    if (!at || !ex || !res) { alert("Complète tous les champs !"); return; }
+    const at = document.getElementById("atelier").value, ex = document.getElementById("exercice").value, res = document.getElementById("ressenti").value, ser = document.getElementById("series").value;
+    if (!at || !ex || !res || !ser) { alert("Complète tous les champs !"); return; }
     
-    let p = "", rm = "-";
+    let p = "", rm = "-", valReps = 0;
     const z = EXERCICES[at].zone;
 
+    // VERIF LIMITE REPS 100
     if (ELASTIQUE_EXOS.includes(ex)) { 
-        p = `Elas.${document.getElementById("val-elastique").value} × ${document.getElementById("reps-el").value}`; 
+        valReps = Number(document.getElementById("reps-el").value);
+        p = `${ser} s. × Éla.${document.getElementById("val-elastique").value} (${valReps} reps)`; 
     } else if (ALT_EXOS.includes(ex)) { 
-        p = document.getElementById("val-alt").value + " reps/sec"; 
+        valReps = Number(document.getElementById("val-alt").value);
+        p = `${ser} s. × ${valReps} reps/sec`; 
     } else {
-        const kg = document.getElementById("kg").value, r = document.getElementById("reps").value;
-        p = (kg === "PDC" ? "PDC" : kg + "kg") + " × " + r;
-        if (kg !== "PDC" && r <= 20) rm = Math.round(kg / (1.0278 - 0.0278 * r)) + " kg";
+        const kg = document.getElementById("kg").value;
+        valReps = Number(document.getElementById("reps").value);
+        p = `${ser} s. × ${kg === "PDC" ? "PDC" : kg + "kg"} (${valReps} reps)`;
+        if (kg !== "PDC" && valReps <= 20) rm = Math.round(kg / (1.0278 - 0.0278 * valReps)) + " kg";
     }
+
+    if(valReps > 100) { alert("Maximum 100 répétitions !"); return; }
 
     dataEleve[at] = { z, ex, p, rm, res };
     localStorage.setItem("session_" + user, JSON.stringify(dataEleve));
@@ -375,6 +373,7 @@ function sauverSérie() {
 }
 
 function resetFields() {
+    document.getElementById("series").value = "";
     document.getElementById("kg").value = "";
     document.getElementById("reps").value = "";
     document.getElementById("val-alt").value = "";
@@ -388,15 +387,7 @@ function initTableau() {
     b.innerHTML = "";
     Object.keys(dataEleve).forEach(at => {
         const d = dataEleve[at];
-        const colorClass = `background:var(--${d.z})`;
-        b.innerHTML += `
-            <tr>
-                <td><span class="badge-zone" style="${colorClass}">${d.z}</span></td>
-                <td style="font-weight:700">${at}</td>
-                <td style="color:var(--haut); font-weight:700">${d.p}</td>
-                <td style="color:var(--muted)">${d.rm}</td>
-                <td>${d.res}</td>
-            </tr>`;
+        b.innerHTML += `<tr><td><span class="badge-zone" style="background:var(--${d.z})">${d.z}</span></td><td style="font-weight:700">${at}</td><td style="color:var(--haut); font-weight:700">${d.p}</td><td style="color:var(--muted)">${d.rm}</td><td>${d.res}</td></tr>`;
     });
     updateStats();
 }
@@ -428,10 +419,7 @@ function drawRadar() {
                 pointBackgroundColor: '#d500f9'
             }]
         },
-        options: {
-            scales: { r: { min: 0, max: 5, ticks: { display: false } } },
-            plugins: { legend: { display: false } }
-        }
+        options: { scales: { r: { min: 0, max: 5, ticks: { display: false } } }, plugins: { legend: { display: false } } }
     });
 }
 
@@ -446,10 +434,7 @@ function confirmerEnvoi() {
 
 function setSession(active) {
     const name = document.getElementById("lesson-input").value || "Séance";
-    if(active) {
-        rdb.ref("live").remove(); 
-        document.getElementById("live-feed").innerHTML = ""; 
-    }
+    if(active) { rdb.ref("live").remove(); document.getElementById("live-feed").innerHTML = ""; }
     rdb.ref("config/active").set({ status: active, name: name });
 }
 
