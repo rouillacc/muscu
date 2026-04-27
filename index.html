@@ -312,20 +312,45 @@ function setSession(active) {
 
 function imprimerLivretClasse() {
     const cf = document.getElementById("prof-classe-filter").value;
-    rdb.ref(`data/${lesson}`).once("value", s => {
-        const d = s.val(); if(!d) return;
+    if (!cf) { alert("Veuillez choisir une classe"); return; }
+    
+    // Sécurité : Si 'lesson' est vide, on essaie de la récupérer depuis l'input ou la config active
+    const lessonToPrint = lesson || document.getElementById("lesson-input").value;
+    
+    if (!lessonToPrint) {
+        alert("Erreur : Aucune séance active ou nom de séance spécifié.");
+        return;
+    }
+
+    rdb.ref(`data/${lessonToPrint}`).once("value", s => {
+        const d = s.val(); 
+        if(!d) {
+            alert("Aucune donnée trouvée pour cette séance (" + lessonToPrint + ")");
+            return;
+        }
+        
         let h = "";
+        let foundAny = false;
+
         Object.keys(d).filter(u => u.startsWith(cf)).forEach(u => {
+            foundAny = true;
             h += `<div class="page-eleve"><h2>BILAN EPS : ${u.replace('_',' ')}</h2><table><thead><tr><th>Atelier</th><th>Exo</th><th>Séries</th><th>RM Max Est.</th><th>Perf</th><th>Avis</th></tr></thead><tbody>`;
             if(d[u].ateliers) {
-                // Ici on affiche bien TOUS les exercices pour le bulletin prof
                 Object.values(d[u].ateliers).forEach(a => { 
                     h += `<tr><td>${a.at}</td><td>${a.ex}</td><td>${a.ser}</td><td>${a.rm}</td><td>${a.p}</td><td>${a.res}</td></tr>`; 
                 });
             }
             h += `</tbody></table><p><b>Commentaire :</b> ${d[u].bilan || 'N/A'}</p></div>`;
         });
-        document.getElementById("print-zone").innerHTML = h; window.print();
+
+        if (!foundAny) {
+            alert("Aucun élève trouvé pour la classe " + cf);
+            return;
+        }
+
+        document.getElementById("print-zone").innerHTML = h; 
+        // Petit délai pour laisser le temps au navigateur de générer le HTML avant d'imprimer
+        setTimeout(() => { window.print(); }, 500);
     });
 }
 
