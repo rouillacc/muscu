@@ -1,297 +1,1243 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EPS Muscu Rouillac</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>EPS Muscu Connect V5.1</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --haut: #00e676; --bas: #ff1744; --tronc: #ffd740; --cardio: #40c4ff;
-            --prof: #d500f9; --bg: #0d0d0d; --surface: #161616; --surface2: #222;
-            --border: rgba(255,255,255,0.1); --text: #f0f0f0; --muted: #444;
-        }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 30px; }
-        .container { max-width: 600px; margin: auto; padding: 10px; }
-        .banner { background: #1a1a1a; border-bottom: 2px solid var(--prof); padding: 12px; font-weight: 700; position: sticky; top: 0; z-index: 1000; text-align: center; display: flex; justify-content: space-between; align-items: center; }
-        .btn-home { background: #333; color: #fff; border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; font-size: 10px; cursor: pointer; text-transform: uppercase; }
-        .card { background: var(--surface); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); }
-        h3, h4 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; margin: 0 0 10px 0; }
-        select, input, textarea { width: 100%; padding: 12px; margin: 5px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--surface2); color: #fff; font-size: 16px; }
-        button { width: 100%; padding: 15px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; }
-        .btn-primary { background: var(--haut); color: #000; }
-        .btn-prof { background: var(--prof); color: #fff; }
-        .btn-danger { background: var(--bas); color: #fff; }
-        .table-container { background: #000; border-radius: 15px; border: 1px solid var(--border); overflow-x: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 600px; }
-        th { background: #1a1a1a; color: #888; padding: 10px 5px; text-transform: uppercase; font-size: 8px; }
-        td { padding: 12px 6px; border-bottom: 1px solid #1a1a1a; text-align: center; color: var(--muted); }
-        tr.completed td { color: #fff; }
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 8px; font-weight: 900; color: #000; text-transform: uppercase; display: inline-block; opacity: 0.3; }
-        .badge-active { opacity: 1 !important; }
-        .badge-haut { background: var(--haut); } .badge-bas { background: var(--bas); color: #fff; } .badge-tronc { background: var(--tronc); } .badge-cardio { background: var(--cardio); }
-        .hidden { display: none !important; }
-        .live-feed { background: #000; border-radius: 12px; padding: 10px; font-family: monospace; font-size: 11px; height: 120px; overflow-y: auto; color: #00e676; border: 1px solid #333; }
+      :root {
+          --haut: #00e676; --bas: #ff1744; --tronc: #ffd740; --cardio: #40c4ff;
+          --prof: #d500f9; --bg: #0d0d0d; --surface: #161616; --surface2: #222;
+          --border: rgba(255,255,255,0.1); --text: #f0f0f0; --muted: #444;
+      }
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+      body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 30px; }
+      .container { max-width: 600px; margin: auto; padding: 10px; }
+      .banner { background: #1a1a1a; border-bottom: 2px solid var(--prof); padding: 12px; font-weight: 700; position: sticky; top: 0; z-index: 1000; text-align: center; display: flex; justify-content: space-between; align-items: center; }
+      .btn-home { background: #333; color: #fff; border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; font-size: 10px; cursor: pointer; text-transform: uppercase; }
+      .card { background: var(--surface); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); }
+      h3, h4 { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; margin: 0 0 10px 0; }
+      select, input, textarea { width: 100%; padding: 12px; margin: 5px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--surface2); color: #fff; font-size: 16px; }
+      button { width: 100%; padding: 15px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; }
+      .btn-primary { background: var(--haut); color: #000; }
+      .btn-prof { background: var(--prof); color: #fff; }
+      .btn-danger { background: var(--bas); color: #fff; }
+      .goals-banner { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+      .goal-item { padding: 10px 5px; border-radius: 12px; color: #000; text-align: center; }
+      .goal-item span { font-weight: 900; font-size: 13px; display: block; }
+      .goal-item small { font-size: 8px; font-weight: 700; line-height: 1.2; display: block; margin-top: 2px; }
+      .g-force { background: #ff5252; } .g-vol { background: #ffab40; } .g-tonif { background: #448aff; }
+      .table-container { background: #000; border-radius: 15px; border: 1px solid var(--border); overflow-x: auto; margin-top: 10px; }
+      table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 600px; }
+      th { background: #1a1a1a; color: #888; padding: 10px 5px; text-transform: uppercase; font-size: 8px; }
+      td { padding: 12px 6px; border-bottom: 1px solid #1a1a1a; text-align: center; color: var(--muted); }
+      tr.completed td { color: #fff; }
+      .badge { padding: 4px 8px; border-radius: 6px; font-size: 8px; font-weight: 900; color: #000; text-transform: uppercase; display: inline-block; opacity: 0.3; }
+      .badge-active { opacity: 1 !important; }
+      .badge-haut { background: var(--haut); } .badge-bas { background: var(--bas); color: #fff; } .badge-tronc { background: var(--tronc); } .badge-cardio { background: var(--cardio); }
+      .live-feed { background: #000; border-radius: 12px; padding: 10px; font-family: monospace; font-size: 11px; height: 120px; overflow-y: auto; color: #00e676; border: 1px solid #333; }
+      .hidden { display: none !important; }
+      .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+      .modal-box { background: #fff; color: #000; width: 100%; border-radius: 20px; padding: 20px; max-height: 90vh; overflow-y: auto; }
+      .row { display: flex; gap: 6px; margin-bottom: 5px; } .row > * { flex: 1; }
+      @media print {
+          .no-print { display: none !important; }
+          #print-zone { display: block !important; }
+          .page-eleve { page-break-after: always; color: black !important; padding: 30px; font-family: sans-serif; }
+          table { width: 100%; border: 1px solid #000; border-collapse: collapse; }
+          th, td { border: 1px solid #000; padding: 8px; color: black !important; text-align: left; }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div id="lesson-banner" class="banner hidden no-print">
+      <button class="btn-home" onclick="location.reload()">🏠 ACCUEIL</button>
+      <span id="cur-lesson-name">SESSION ACTIVE</span>
+      <div style="width:60px"></div>
+    </div>
 
-<div id="lesson-banner" class="banner hidden">
-    <button class="btn-home" onclick="location.reload()">🏠 ACCUEIL</button>
-    <span id="cur-lesson-name">SESSION ACTIVE</span>
-    <div style="width:60px"></div>
-</div>
+    <div class="container no-print">
+      <h2
+        style="text-align: center; font-family:'Bebas Neue'; color: var(--haut);"
+      >
+        🏋️ EPS MUSCU CONNECT
+      </h2>
 
-<div class="container">
-    <h2 style="text-align: center; font-family:'Bebas Neue'; color: var(--haut);">🏋️ EPS MUSCU ROUILLAC</h2>
-
-    <div id="auth-screen" class="card">
+      <div id="auth-screen" class="card">
         <h3>Identification</h3>
-        <div id="studentLessonInfo" style="font-size:12px; color:#bbb; margin-bottom:8px;">Vérification de la séance...</div>
-        <select id="classe"><option value="">-- Classe --</option></select>
-        <select id="eleve"><option value="">Choisir d'abord une classe</option></select>
-        <button class="btn-primary" onclick="connexion()" style="margin-top:10px;">DÉMARRER LA SÉANCE</button>
-    </div>
+        <div
+          id="studentLessonInfo"
+          style="font-size:12px; color:#bbb; margin-bottom:8px;"
+        >
+          Chargement de la séance...
+        </div>
+        <select id="classe">
+          <option value="">-- Classe --</option>
+        </select>
+        <select id="eleve">
+          <option value="">Choisir d'abord une classe</option>
+        </select>
+        <div
+          id="student-error"
+          style="font-size:12px; color:#ff8a80; min-height:16px; margin:4px 0 8px 0;"
+        ></div>
+        <button class="btn-primary" onclick="connexion()">
+          DÉMARRER LA SÉANCE
+        </button>
+      </div>
 
-    <div id="app-eleve" class="hidden">
+      <div id="app-eleve" class="hidden">
+        <div class="goals-banner">
+          <div class="goal-item g-force">
+            <span>FORCE</span
+            ><small>3-5 Séries<br />1-6 Reps<br />85-100% RM</small>
+          </div>
+          <div class="goal-item g-vol">
+            <span>VOLUME</span
+            ><small>3-4 Séries<br />7-12 Reps<br />70-85% RM</small>
+          </div>
+          <div class="goal-item g-tonif">
+            <span>TONIF.</span
+            ><small>2-3 Séries<br />13+ Reps<br />50-70% RM</small>
+          </div>
+        </div>
+
         <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <span id="user-info" style="font-weight:700; color:var(--prof);"></span>
-                <button class="btn-home" onclick="location.reload()">Changer</button>
-            </div>
+          <div
+            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"
+          >
+            <span
+              id="user-info"
+              style="font-weight:700; color:var(--prof);"
+            ></span>
+            <button
+              class="btn-home"
+              onclick="location.reload()"
+              style="width:auto; padding:5px 10px;"
+            >
+              Changer d'élève
+            </button>
+          </div>
 
-            <select id="atelier" onchange="majExercices()">
-                <option value="">-- Choisir Atelier --</option>
-                <optgroup label="💪 HAUT" data-zone="haut"><option>Pectoraux</option><option>Biceps</option><option>Triceps</option><option>Trapèzes</option></optgroup>
-                <optgroup label="🦵 BAS" data-zone="bas"><option>Quadriceps</option><option>Ischios</option><option>Fessiers</option><option>Mollets</option></optgroup>
-                <optgroup label="🧘 TRONC" data-zone="tronc"><option>Abdominaux</option><option>Obliques</option><option>Gainage</option><option>Grand Dorsal</option></optgroup>
-                <optgroup label="❤️ CARDIO" data-zone="cardio"><option>Jumping Jack</option><option>Mountain Climber</option><option>Burpees</option></optgroup>
+          <select id="atelier" onchange="majExercices()">
+            <option value="">-- Choisir Atelier --</option>
+            <optgroup label="💪 HAUT" data-zone="haut">
+              <option>Pectoraux</option>
+              <option>Biceps</option>
+              <option>Triceps</option>
+              <option>Trapèzes</option>
+            </optgroup>
+            <optgroup label="🦵 BAS" data-zone="bas">
+              <option>Quadriceps</option>
+              <option>Ischios</option>
+              <option>Fessiers</option>
+              <option>Mollets</option>
+            </optgroup>
+            <optgroup label="🧘 TRONC" data-zone="tronc">
+              <option>Abdominaux</option>
+              <option>Obliques</option>
+              <option>Grand Dorsal</option>
+            </optgroup>
+            <optgroup label="❤️ CARDIO" data-zone="cardio">
+              <option>Jumping Jack</option>
+              <option>Mountain Climber</option>
+              <option>Burpees</option>
+            </optgroup>
+          </select>
+
+          <select id="exercice" onchange="majUI()" class="hidden"></select>
+
+          <div id="fields-zone" class="hidden">
+            <div class="row">
+              <select id="series">
+                <option value="">Séries</option>
+                <script>
+                  for(let i=1; i<=6; i++) document.write(`<option value="${i}">${i} série(s)</option>`);
+                </script>
+              </select>
+            </div>
+            <div id="f-std" class="hidden">
+              <div class="row">
+                <select id="kg">
+                  <option value="PDC">Charge</option>
+                  <script>
+                    for(let i=1; i<=80; i++) document.write(`<option value="${i}">${i} kg</option>`);
+                  </script></select
+                ><input
+                  type="number"
+                  id="reps"
+                  placeholder="Reps"
+                  inputmode="numeric"
+                />
+              </div>
+            </div>
+            <div id="f-alt" class="hidden">
+              <input
+                type="number"
+                id="val-alt"
+                placeholder="Reps ou Secondes"
+                inputmode="numeric"
+              />
+            </div>
+            <div id="f-elastique" class="hidden">
+              <div class="row" style="margin-bottom:8px;">
+                <button
+                  id="el-Vert"
+                  style="background:#27ae60;"
+                  onclick="selectElastique('Vert')"
+                >
+                  V</button
+                ><button
+                  id="el-Rouge"
+                  style="background:#e74c3c;"
+                  onclick="selectElastique('Rouge')"
+                >
+                  R</button
+                ><button
+                  id="el-Noir"
+                  style="background:#222;"
+                  onclick="selectElastique('Noir')"
+                >
+                  N
+                </button>
+              </div>
+              <input type="hidden" id="val-elastique" /><input
+                type="number"
+                id="reps-el"
+                placeholder="Reps"
+                inputmode="numeric"
+              />
+            </div>
+            <select id="ressenti">
+              <option value="(+) Simple">(+) Simple</option>
+              <option value="(=) Efficace" selected>(=) Efficace</option>
+              <option value="(-) Difficile">(-) Difficile</option>
             </select>
-
-            <select id="exercice" onchange="majUI()" class="hidden"></select>
-
-            <div id="fields-zone" class="hidden">
-                <div class="row"><select id="series"><option value="">Séries</option><script>for(let i=1; i<=6; i++) document.write(`<option value="${i}">${i} série(s)</option>`);</script></select></div>
-                
-                <div id="f-std" class="hidden"><div class="row" style="display:flex; gap:5px;"><select id="kg" style="flex:1;"><option value="PDC">PDC</option><script>for(let i=1; i<=80; i++) document.write(`<option value="${i}">${i} kg</option>`);</script></select><input type="number" id="reps" placeholder="Reps" style="flex:1;" inputmode="numeric"></div></div>
-                <div id="f-alt" class="hidden"><input type="number" id="val-alt" placeholder="Reps ou Secondes" inputmode="numeric"></div>
-                
-                <select id="ressenti"><option value="(+) Simple">(+) Simple</option><option value="(=) Efficace" selected>(=) Efficace</option><option value="(-) Difficile">(-) Difficile</option></select>
-                <button class="btn-primary" onclick="sauverSérie()">VALIDER</button>
-            </div>
+            <button class="btn-primary" onclick="sauverSérie()">
+              VALIDER L'ATELIER
+            </button>
+          </div>
         </div>
 
         <div class="card">
-            <h4>📊 MA FEUILLE DE ROUTE</h4>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Zone</th><th>Atelier</th><th>Exercice</th><th>Séries</th><th>Est. Max</th><th>Perf</th><th>Avis</th></tr></thead>
-                    <tbody id="table-body"></tbody>
-                </table>
-            </div>
+          <h4>📊 MA FEUILLE DE ROUTE</h4>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Zone</th>
+                  <th>Atelier</th>
+                  <th>Exercice</th>
+                  <th>Séries</th>
+                  <th>Estimation RM Max</th>
+                  <th>Perf</th>
+                  <th>Avis</th>
+                </tr>
+              </thead>
+              <tbody id="table-body"></tbody>
+            </table>
+          </div>
+          <button
+            onclick="ouvrirBilanFinal()"
+            class="btn-prof"
+            style="margin-top:20px;"
+          >
+            TERMINER & BILAN FINAL
+          </button>
         </div>
-    </div>
+      </div>
 
-    <div id="app-prof" class="hidden">
+      <div id="app-prof" class="hidden">
         <div class="card">
-            <h3>CONSOLE PROF</h3>
-            <input type="text" id="lesson-input" placeholder="Nom séance">
-            <button class="btn-primary" onclick="createLesson()">OUVRIR LA SÉANCE</button>
-            <h4 style="margin-top:15px;">Classes</h4>
-            <input type="text" id="class-name-input" placeholder="Ex: 3A">
-            <input type="file" id="class-file-input">
-            <button class="btn-prof" onclick="importClassFromCSV()" style="margin-top:5px;">IMPORTER</button>
-            <div id="live-feed" class="live-feed" style="margin-top:15px;"></div>
+          <div
+            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"
+          >
+            <h3>CONSOLE PROFESSEUR</h3>
+            <button
+              class="btn-home"
+              onclick="location.reload()"
+              style="width:auto; padding:5px 10px;"
+            >
+              Quitter Console
+            </button>
+          </div>
+
+          <h4>Leçon</h4>
+          <input type="text" id="lesson-input" placeholder="Nom de séance" />
+          <div class="row">
+            <button class="btn-primary" onclick="createLesson()">OUVRIR</button
+            ><button class="btn-danger" onclick="closeActiveLesson()">
+              FERMER
+            </button>
+          </div>
+          <select id="lesson-history-select">
+            <option value="">-- Historique des leçons --</option>
+          </select>
+          <div class="row">
+            <button class="btn-prof" onclick="reopenSelectedLesson()">
+              ROUVRIR LA LEÇON</button
+            ><button
+              class="btn-home"
+              onclick="loadLessonHistory()"
+              style="background:#333; color:#fff;"
+            >
+              ACTUALISER
+            </button>
+          </div>
+          <div
+            id="lesson-manager-message"
+            style="font-size:12px; color:#bbb; min-height:16px; margin-top:6px;"
+          ></div>
+
+          <h4 style="margin-top:18px;">Classes</h4>
+          <input
+            type="text"
+            id="class-name-input"
+            placeholder="Nom de classe (ex. 3A)"
+          />
+          <input
+            type="file"
+            id="class-file-input"
+            accept=".csv,text/csv"
+            style="background:#1f1f1f; color:#fff; padding:10px; border:1px solid #444;"
+          />
+          <div
+            id="class-file-name"
+            style="font-size:12px; color:#9be7ff; margin:4px 0 8px 0; min-height:16px;"
+          >
+            Aucun fichier sélectionné
+          </div>
+          <div class="row">
+            <button
+              id="import-class-btn"
+              class="btn-primary"
+              onclick="importClassFromCSV()"
+            >
+              IMPORTER CSV PRONOTE</button
+            ><button
+              class="btn-home"
+              onclick="loadClasses()"
+              style="background:#333; color:#fff;"
+            >
+              ACTUALISER
+            </button>
+          </div>
+          <select id="class-delete-select">
+            <option value="">-- Supprimer une classe --</option>
+          </select>
+          <button
+            class="btn-danger"
+            onclick="deleteClassOnline()"
+            style="margin-top:8px;"
+          >
+            SUPPRIMER LA CLASSE
+          </button>
+          <div
+            id="class-manager-message"
+            style="font-size:12px; color:#bbb; min-height:16px; margin-top:6px;"
+          ></div>
+
+          <h4 style="margin-top:18px;">📡 LIVE</h4>
+          <div id="live-feed" class="live-feed"></div>
+
+          <h4 style="margin-top:18px;">Impression / purge</h4>
+          <select id="prof-classe-filter">
+            <option value="">-- Classe --</option>
+          </select>
+          <button class="btn-prof" onclick="imprimerLivretClasse()">
+            🖨️ IMPRIMER LE LIVRET
+          </button>
+          <button
+            class="btn-danger"
+            onclick="nettoyerClasse()"
+            style="margin-top:8px; background:#600;"
+          >
+            🗑️ PURGER LES RÉSULTATS DE LA CLASSE
+          </button>
         </div>
+      </div>
+
+      <div style="text-align:center; margin-top:20px;">
+        <button
+          id="prof-direct-btn"
+          style="display:block; margin:10px auto 0 auto; background:#00e676; color:#000; font-size:11px; padding:10px 14px; border-radius:10px; width:auto;"
+          onclick="openProfDirect()"
+        >
+          OUVRIR CONSOLE PROF (DIRECT)
+        </button>
+      </div>
     </div>
 
-    <button style="display:block; margin:20px auto; background:transparent; border:none; color:#222;" onclick="accessProf()">[ Prof ]</button>
-</div>
+    <div id="modal-overlay" class="modal-overlay hidden no-print">
+      <div class="modal-box">
+        <h3 style="text-align:center">ÉQUILIBRE MUSCULAIRE</h3>
+        <div style="max-width:300px; margin:auto;">
+          <canvas id="radarChart"></canvas>
+        </div>
+        <textarea
+          id="bilan-texte"
+          rows="3"
+          placeholder="Tes conclusions..."
+        ></textarea>
+        <div class="row" style="margin-top:10px;">
+          <button
+            onclick="document.getElementById('modal-overlay').classList.add('hidden')"
+            style="background:#888; color:#fff;"
+          >
+            RETOUR
+          </button>
+          <button onclick="finaliserSeance()" class="btn-prof">ENVOYER</button>
+        </div>
+      </div>
+    </div>
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyCEYWqZ9GGwWHZ4mEUS4HgaZL03hXlKpcE",
-  authDomain: "muscu-3e.firebaseapp.com",
-  projectId: "muscu-3e",
-  databaseURL: "https://muscu-3e-default-rtdb.europe-west1.firebasedatabase.app"
-};
-firebase.initializeApp(firebaseConfig);
-const rdb = firebase.database();
+    <div id="print-zone" style="display:none"></div>
 
-const LISTE_ATELIERS = [
-    { n: "Pectoraux", z: "haut" }, { n: "Biceps", z: "haut" }, { n: "Triceps", z: "haut" }, { n: "Trapèzes", z: "haut" },
-    { n: "Quadriceps", z: "bas" }, { n: "Ischios", z: "bas" }, { n: "Fessiers", z: "bas" }, { n: "Mollets", z: "bas" },
-    { n: "Abdominaux", z: "tronc" }, { n: "Obliques", z: "tronc" }, { n: "Gainage", z: "tronc" }, { n: "Grand Dorsal", z: "tronc" },
-    { n: "Jumping Jack", z: "cardio" }, { n: "Mountain Climber", z: "cardio" }, { n: "Burpees", z: "cardio" }
-];
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCEYWqZ9GGwWHZ4mEUS4HgaZL03hXlKpcE",
+        authDomain: "muscu-3e.firebaseapp.com",
+        projectId: "muscu-3e",
+        databaseURL: "https://muscu-3e-default-rtdb.europe-west1.firebasedatabase.app"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const rdb = firebase.database();
 
-const EXERCICES = {
-    "Pectoraux": ["Pompes","Développé Couché","Butterfly"],
-    "Biceps": ["Curl Biceps","Curl Marteau","Curl TRX"],
-    "Triceps": ["Triceps Extension","Triceps Kicks","Dips"],
-    "Trapèzes": ["Tirage Bras Tendus","Tirage KB","Presse Épaule"],
-    "Quadriceps": ["Squats","Chaise","Squats Sautés"],
-    "Ischios": ["Relevé Bassin","Bassin 1 Jambe","Bassin Dyn"],
-    "Fessiers": ["Fentes Bulgares","Fentes","Fentes Sautées"],
-    "Mollets": ["Mollets","Montées Poids","Montées KB"],
-    "Abdominaux": ["Crunchs","Sit-Up","Hollow"],
-    "Obliques": ["Russian Twist","Touche Talons","Crunch Pédalo"],
-    "Gainage": ["Gainage statique","Gainage dynamique","Gainage étoile"],
-    "Grand Dorsal": ["Arlaud","Arlaud Dyn","Rameur"],
-    "Jumping Jack": ["Jumping Jack","Star Jump","Corde"],
-    "Mountain Climber": ["M. Climber Bloqué","M. Climber Dyn","M. Climber Cross"],
-    "Burpees": ["Marche Ours","Sprawl","Burpees"]
-};
+      const TEACHER_CODE = "16170";
+      let user = "";
+      let currentActiveLessonId = "";
+      let currentLessonName = "";
+      let currentTeacherLessonId = "";
+      let radarChartInstance = null;
+      let dataEleve = {};
+      let currentStudentMap = {};
+      let currentClassMap = {};
+      let studentAteliersRef = null;
+      let liveListenerAttached = false;
+      let currentStudentMeta = null;
 
-const ALT_EXOS = ["Crunchs","Sit-Up","Hollow","Russian Twist","Touche Talons","Crunch Pédalo","Arlaud","Arlaud Dyn","Chaise","Gainage statique","Gainage dynamique","Gainage étoile"];
+      const LISTE_ATELIERS = [
+          { n: "Pectoraux", z: "haut" }, { n: "Biceps", z: "haut" }, { n: "Triceps", z: "haut" }, { n: "Trapèzes", z: "haut" },
+          { n: "Quadriceps", z: "bas" }, { n: "Ischios", z: "bas" }, { n: "Fessiers", z: "bas" }, { n: "Mollets", z: "bas" },
+          { n: "Abdominaux", z: "tronc" }, { n: "Obliques", z: "tronc" }, { n: "Grand Dorsal", z: "tronc" },
+          { n: "Jumping Jack", z: "cardio" }, { n: "Mountain Climber", z: "cardio" }, { n: "Burpees", z: "cardio" }
+      ];
 
-let currentActiveLessonId = "";
-let currentLessonName = "";
-let user = "";
-let dataEleve = {};
+      const EXERCICES = {
+          "Pectoraux": { list:["Pompes","Développé Couché","Butterfly"] },
+          "Biceps": { list:["Curl Biceps","Curl Marteau","Curl TRX"] },
+          "Triceps": { list:["Triceps Extension","Triceps Kicks","Dips"] },
+          "Trapèzes": { list:["Tirage Bras Tendus","Tirage Kettlebell","Presse Épaule"] },
+          "Quadriceps": { list:["Squats","Chaise","Squats Sautés"] },
+          "Ischios": { list:["Relevé de Bassin","Relevé de Bassin 1 Jambe","Relevé de Bassin Dynamique"] },
+          "Fessiers": { list:["Fentes Bulgares","Fentes","Fentes Sautées"] },
+          "Mollets": { list:["Mollets","Montées avec Poids","Montées Kettlebell"] },
+          "Abdominaux": { list:["Crunchs","Sit-Up","Hollow"] },
+          "Obliques": { list:["Russian Twist","Touche Talons","Crunch Pédalos"] },
+          "Grand Dorsal": { list:["Arlaud","Arlaud Dynamique","Rameur Élastique"] },
+          "Jumping Jack": { list:["Jumping Jack","Star Jump","Corde à Sauter"] },
+          "Mountain Climber": { list:["Mountain Climber Bloqué","Mountain Climber Dynamique","Mountain Climber Crossfit"] },
+          "Burpees": { list:["Marche de l'Ours","Sprawl","Burpees"] }
+      };
 
-// INITIALISATION
-window.onload = async function() {
-    try {
-        await loadClasses();
-        listenToActiveLesson();
-    } catch(e) { console.error("Erreur chargement:", e); }
-};
+      const ALT_EXOS = ["Crunchs","Sit-Up","Hollow","Russian Twist","Touche Talons","Crunch Pédalos","Arlaud","Arlaud Dynamique","Chaise","Jumping Jack","Star Jump","Corde à Sauter","Mountain Climber Bloqué","Mountain Climber Dynamique","Mountain Climber Crossfit","Marche de l'Ours","Sprawl","Burpees","Squats Sautés","Montées Descentes"];
+      const ELASTIQUE_EXOS = ["Dips","Tirage Bras Tendus","Rameur Élastique"];
 
-async function loadClasses() {
-    const snap = await rdb.ref("classes").once("value");
-    const raw = snap.val() || {};
-    const sel = document.getElementById("classe");
-    sel.innerHTML = '<option value="">-- Classe --</option>';
-    Object.keys(raw).forEach(id => {
-        let opt = document.createElement("option");
-        opt.value = id;
-        opt.textContent = raw[id].className || id;
-        sel.appendChild(opt);
-    });
-}
+      const classeSelect = document.getElementById("classe");
+      const eleveSelect = document.getElementById("eleve");
+      const studentError = document.getElementById("student-error");
+      const studentLessonInfo = document.getElementById("studentLessonInfo");
+      const lessonBanner = document.getElementById("lesson-banner");
+      const curLessonNameEl = document.getElementById("cur-lesson-name");
+      const appProf = document.getElementById("app-prof");
+      const authScreen = document.getElementById("auth-screen");
+      const appEleve = document.getElementById("app-eleve");
+      const liveFeed = document.getElementById("live-feed");
+      const classNameInput = document.getElementById("class-name-input");
+      const classFileInput = document.getElementById("class-file-input");
+      const classDeleteSelect = document.getElementById("class-delete-select");
+      const classManagerMessage = document.getElementById("class-manager-message");
+      const lessonInput = document.getElementById("lesson-input");
+      const lessonHistorySelect = document.getElementById("lesson-history-select");
+      const lessonManagerMessage = document.getElementById("lesson-manager-message");
+      const profClasseFilter = document.getElementById("prof-classe-filter");
+      const classFileName = document.getElementById("class-file-name");
+      const importClassBtn = document.getElementById("import-class-btn");
 
-function listenToActiveLesson() {
-    rdb.ref("config/active").on("value", snap => {
-        const d = snap.val();
-        const info = document.getElementById("studentLessonInfo");
-        if(d) {
-            currentActiveLessonId = d.lessonId;
-            currentLessonName = d.name;
-            info.textContent = "Séance : " + d.name;
-            info.style.color = "#00e676";
-            document.getElementById("lesson-banner").classList.remove("hidden");
-            document.getElementById("cur-lesson-name").textContent = d.name;
-        } else {
-            info.textContent = "Aucune séance active.";
-            info.style.color = "#ff1744";
-        }
-    });
-}
+      function normalizeText(value) {
+          return (value || "").toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+      }
 
-document.getElementById("classe").onchange = async function() {
-    const classId = this.value;
-    const sel = document.getElementById("eleve");
-    sel.innerHTML = '<option value="">-- Élève --</option>';
-    if(!classId) return;
-    const snap = await rdb.ref(`classes/${classId}/students`).once("value");
-    const students = snap.val() || {};
-    Object.keys(students).sort().forEach(id => {
-        let opt = document.createElement("option");
-        opt.value = id;
-        opt.textContent = students[id].nomComplet || id;
-        sel.appendChild(opt);
-    });
-};
+      function slugify(value) {
+          return normalizeText(value).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || ("id-" + Date.now());
+      }
 
-function connexion() {
-    const c = document.getElementById("classe").value;
-    const e = document.getElementById("eleve").value;
-    if(!c || !e || !currentActiveLessonId) return alert("Sélectionne ta classe, ton nom et attends l'ouverture prof.");
-    user = `${c}__${e}`;
-    document.getElementById("auth-screen").classList.add("hidden");
-    document.getElementById("app-eleve").classList.remove("hidden");
-    document.getElementById("user-info").innerText = e;
-    
-    rdb.ref(`data/${currentActiveLessonId}/${user}/ateliers`).on("value", snap => {
-        dataEleve = snap.val() || {};
-        initTableau();
-    });
-}
+      function escapeHtml(value) {
+          return (value || "").toString().replace(/[&<>"]/g, function(char) {
+              return ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"})[char] || char;
+          });
+      }
 
-function majExercices() {
-    const at = document.getElementById("atelier").value;
-    const exSel = document.getElementById("exercice");
-    if(!at) return;
-    exSel.innerHTML = '<option value="">-- Exercice --</option>' + EXERCICES[at].map(e => `<option value="${e}">${e}</option>`).join("");
-    exSel.classList.remove("hidden");
-    document.getElementById("fields-zone").classList.remove("hidden");
-}
+      function setStudentMessage(message, isError) {
+          studentError.textContent = message || "";
+          studentError.style.color = isError ? "#ff8a80" : "#9be7ff";
+      }
 
-function majUI() {
-    const ex = document.getElementById("exercice").value;
-    document.getElementById("f-std").className = !ALT_EXOS.includes(ex) ? "" : "hidden";
-    document.getElementById("f-alt").className = ALT_EXOS.includes(ex) ? "" : "hidden";
-}
+      function setClassManagerMessage(message, isError) {
+          classManagerMessage.textContent = message || "";
+          classManagerMessage.style.color = isError ? "#ff8a80" : "#9be7ff";
+      }
 
-function sauverSérie() {
-    const at = document.getElementById("atelier").value;
-    const ex = document.getElementById("exercice").value;
-    const ser = document.getElementById("series").value;
-    const res = document.getElementById("ressenti").value;
-    if(!at || !ex || !ser) return;
+      function setLessonManagerMessage(message, isError) {
+          lessonManagerMessage.textContent = message || "";
+          lessonManagerMessage.style.color = isError ? "#ff8a80" : "#9be7ff";
+      }
 
-    let p = "", rm = "";
-    if(ALT_EXOS.includes(ex)) {
-        p = document.getElementById("val-alt").value + (ex.includes("Gainage") ? "s" : "r");
-        rm = ex.includes("Gainage") ? "Maintien" : "Endurance";
-    } else {
-        let poids = document.getElementById("kg").value;
-        let reps = document.getElementById("reps").value;
-        p = `${poids}kg / ${reps}r`;
-        rm = poids !== "PDC" ? Math.round(poids/(1.0278-(0.0278*reps))) + "kg" : "PDC";
-    }
+      function getSelectedLessonId() {
+          return lessonHistorySelect.value || currentTeacherLessonId || currentActiveLessonId || "";
+      }
 
-    const zone = LISTE_ATELIERS.find(a => a.n === at).z;
-    dataEleve[at] = { at, z: zone, ex, ser, p, res, rm };
-    rdb.ref(`data/${currentActiveLessonId}/${user}/ateliers`).set(dataEleve);
-    
-    document.getElementById("atelier").value = "";
-    document.getElementById("exercice").classList.add("hidden");
-    document.getElementById("fields-zone").classList.add("hidden");
-}
+      function formatLessonOption(lesson) {
+          const prefix = lesson.status === "active" ? "[ACTIVE] " : "[CLOSE] ";
+          return prefix + (lesson.name || lesson.id);
+      }
 
-function initTableau() {
-    const b = document.getElementById("table-body");
-    b.innerHTML = "";
-    LISTE_ATELIERS.forEach(at => {
-        const d = dataEleve[at.n];
-        if(d) {
-            b.innerHTML += `<tr class="completed"><td><span class="badge badge-active badge-${at.z}">${at.z}</span></td><td><b>${at.n}</b></td><td>${d.ex}</td><td>${d.ser}</td><td>${d.rm}</td><td style="color:var(--haut)">${d.p}</td><td>${d.res}</td></tr>`;
-        } else {
-            b.innerHTML += `<tr><td><span class="badge badge-${at.z}">${at.z}</span></td><td><b>${at.n}</b></td><td colspan="5" style="opacity:0.2">...</td></tr>`;
-        }
-    });
-}
+      function detectDelimiter(text) {
+          const firstLine = (text || "").split(/\r?\n/).find(line => line.trim().length > 0) || "";
+          const candidates = [";", ",", "\t"];
+          let best = ";";
+          let bestCount = -1;
+          candidates.forEach(function(delim) {
+              const count = firstLine.split(delim).length;
+              if (count > bestCount) {
+                  best = delim;
+                  bestCount = count;
+              }
+          });
+          return best;
+      }
 
-function accessProf() {
-    if(prompt("Code") === "16170") {
-        document.getElementById("auth-screen").classList.add("hidden");
-        document.getElementById("app-prof").classList.remove("hidden");
-    }
-}
+      function splitCSVLine(line, delimiter) {
+          const cols = [];
+          let current = "";
+          let inQuotes = false;
+          for (let i = 0; i < line.length; i++) {
+              const char = line[i];
+              if (char === '"') {
+                  if (inQuotes && line[i + 1] === '"') {
+                      current += '"';
+                      i++;
+                  } else {
+                      inQuotes = !inQuotes;
+                  }
+              } else if (char === delimiter && !inQuotes) {
+                  cols.push(current.trim());
+                  current = "";
+              } else {
+                  current += char;
+              }
+          }
+          cols.push(current.trim());
+          return cols;
+      }
 
-async function createLesson() {
-    const n = document.getElementById("lesson-input").value || "Séance";
-    const id = "L" + Date.now();
-    await rdb.ref(`lessons/${id}`).set({ name: n, status: "active" });
-    await rdb.ref("config/active").set({ lessonId: id, name: n });
-    alert("Séance ouverte !");
-}
-</script>
-</body>
+      function findHeaderIndex(headers, aliases) {
+          const normalizedHeaders = headers.map(header => normalizeText(header));
+          for (let i = 0; i < normalizedHeaders.length; i++) {
+              if (aliases.includes(normalizedHeaders[i])) return i;
+          }
+          return -1;
+      }
+
+      function splitStudentFullName(fullName) {
+          const clean = (fullName || "").replace(/\s+/g, " ").trim();
+          if (!clean) return { nom: "", prenom: "", nomComplet: "" };
+
+          const parts = clean.split(" ").filter(Boolean);
+          const nomParts = [];
+          const prenomParts = [];
+
+          parts.forEach(function(part) {
+              const hasLetters = /[A-Za-zÀ-ÿ]/.test(part);
+              const isUpper = hasLetters && part === part.toUpperCase();
+              if (prenomParts.length === 0 && isUpper) {
+                  nomParts.push(part);
+              } else {
+                  prenomParts.push(part);
+              }
+          });
+
+          let nom = nomParts.join(" ").trim();
+          let prenom = prenomParts.join(" ").trim();
+
+          if (!nom && !prenom && parts.length) {
+              prenom = parts.pop() || "";
+              nom = parts.join(" ").trim();
+          }
+          if (!prenom && parts.length > 1) {
+              prenom = parts[parts.length - 1];
+              nom = parts.slice(0, -1).join(" ").trim();
+          }
+          if (!nom) nom = clean;
+
+          return { nom: nom, prenom: prenom, nomComplet: clean };
+      }
+
+      function parsePronoteCSV(text) {
+          const cleanText = (text || "").replace(/^\uFEFF/, "").trim();
+          if (!cleanText) throw new Error("Le fichier est vide.");
+
+          const delimiter = detectDelimiter(cleanText);
+          const lines = cleanText.split(/\r?\n/).filter(line => line.trim().length > 0);
+          if (lines.length < 2) throw new Error("Le fichier doit contenir un en-tête et au moins une ligne élève.");
+
+          const headers = splitCSVLine(lines[0], delimiter);
+          const elevesIndex = findHeaderIndex(headers, ["eleves", "eleve", "listeeleves"]);
+          const nomIndex = findHeaderIndex(headers, ["nom", "elevenom", "nomdeleleve", "lastname"]);
+          const prenomIndex = findHeaderIndex(headers, ["prenom", "prenoms", "eleveprenom", "prenomdeleleve", "firstname"]);
+
+          const students = [];
+
+          for (let i = 1; i < lines.length; i++) {
+              const cols = splitCSVLine(lines[i], delimiter);
+
+              if (elevesIndex !== -1) {
+                  const fullName = (cols[elevesIndex] || "").trim();
+                  if (!fullName) continue;
+                  students.push(splitStudentFullName(fullName));
+                  continue;
+              }
+
+              if (nomIndex !== -1 || prenomIndex !== -1) {
+                  const nom = nomIndex !== -1 ? (cols[nomIndex] || "").trim() : "";
+                  const prenom = prenomIndex !== -1 ? (cols[prenomIndex] || "").trim() : "";
+                  if (!nom && !prenom) continue;
+                  students.push({
+                      nom: nom,
+                      prenom: prenom,
+                      nomComplet: ((nom ? nom.toUpperCase() : "") + " " + prenom).trim()
+                  });
+              }
+          }
+
+          const seen = new Set();
+          const dedup = [];
+          students.forEach(function(student) {
+              const key = normalizeText(student.nomComplet || (student.nom + " " + student.prenom));
+              if (!key || seen.has(key)) return;
+              seen.add(key);
+              dedup.push({
+                  id: slugify(student.nomComplet || (student.nom + " " + student.prenom)),
+                  nom: student.nom || "",
+                  prenom: student.prenom || "",
+                  nomComplet: student.nomComplet || ((student.nom ? student.nom.toUpperCase() : "") + " " + (student.prenom || "")).trim()
+              });
+          });
+
+          dedup.sort(function(a, b) {
+              return (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr");
+          });
+
+          if (dedup.length === 0) throw new Error("Aucun élève exploitable trouvé dans le fichier.");
+          return dedup;
+      }
+
+      function readSelectedFile(file) {
+          return new Promise(function(resolve, reject) {
+              const reader = new FileReader();
+              reader.onload = function() { resolve(reader.result || ""); };
+              reader.onerror = function() { reject(new Error("Impossible de lire le fichier.")); };
+              reader.readAsText(file, "utf-8");
+          });
+      }
+
+      function withTimeout(promise, timeoutMs, message) {
+          return Promise.race([
+              promise,
+              new Promise(function(_, reject) {
+                  setTimeout(function() {
+                      reject(new Error(message || "Opération trop longue."));
+                  }, timeoutMs);
+              })
+          ]);
+      }
+
+      async function loadClasses() {
+          try {
+              const selectedStudentClass = classeSelect.value;
+              const selectedDeleteClass = classDeleteSelect.value;
+              const selectedProfClass = profClasseFilter.value;
+              const snap = await withTimeout(rdb.ref("classes").once("value"), 6000, "Lecture Firebase trop longue.");
+              const raw = snap.val() || {};
+              const classes = Object.keys(raw).map(function(id) {
+                  return Object.assign({ id: id }, raw[id]);
+              }).filter(function(item) {
+                  return item.active !== false;
+              }).sort(function(a, b) {
+                  return (a.className || a.id).localeCompare((b.className || b.id), "fr");
+              });
+
+              currentClassMap = {};
+              classeSelect.innerHTML = '<option value="">-- Classe --</option>';
+              classDeleteSelect.innerHTML = '<option value="">-- Supprimer une classe --</option>';
+              profClasseFilter.innerHTML = '<option value="">-- Classe --</option>';
+
+              classes.forEach(function(item) {
+                  currentClassMap[item.id] = item;
+                  [classeSelect, classDeleteSelect, profClasseFilter].forEach(function(selectEl) {
+                      const option = document.createElement("option");
+                      option.value = item.id;
+                      option.textContent = item.className || item.id;
+                      selectEl.appendChild(option);
+                  });
+              });
+
+              if (selectedStudentClass && currentClassMap[selectedStudentClass]) classeSelect.value = selectedStudentClass;
+              if (selectedDeleteClass && currentClassMap[selectedDeleteClass]) classDeleteSelect.value = selectedDeleteClass;
+              if (selectedProfClass && currentClassMap[selectedProfClass]) profClasseFilter.value = selectedProfClass;
+
+              await loadStudentsForSelectedClass();
+          } catch (error) {
+              console.error(error);
+              setClassManagerMessage(error.message || "Impossible de charger les classes.", true);
+          }
+      }
+
+      async function loadStudentsForSelectedClass() {
+          const classId = classeSelect.value;
+          currentStudentMap = {};
+          if (!classId) {
+              eleveSelect.innerHTML = '<option value="">Choisir d\'abord une classe</option>';
+              return;
+          }
+
+          eleveSelect.innerHTML = '<option value="">Chargement des élèves...</option>';
+          try {
+              const snap = await rdb.ref(`classes/${classId}/students`).once("value");
+              const raw = snap.val() || {};
+              const students = Object.keys(raw).map(function(id) {
+                  return Object.assign({ id: id }, raw[id]);
+              }).sort(function(a, b) {
+                  return (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr");
+              });
+
+              eleveSelect.innerHTML = '<option value="">-- Élève --</option>';
+              students.forEach(function(student) {
+                  currentStudentMap[student.id] = student;
+                  const option = document.createElement("option");
+                  option.value = student.id;
+                  option.textContent = student.nomComplet || student.id;
+                  eleveSelect.appendChild(option);
+              });
+
+              if (students.length === 0) {
+                  eleveSelect.innerHTML = '<option value="">Aucun élève dans cette classe</option>';
+              }
+          } catch (error) {
+              console.error(error);
+              eleveSelect.innerHTML = '<option value="">Élèves indisponibles</option>';
+          }
+      }
+
+      async function importClassFromCSV() {
+          const className = (classNameInput.value || "").trim();
+          const file = classFileInput.files && classFileInput.files[0];
+          if (!className) {
+              setClassManagerMessage("Renseignez un nom de classe.", true);
+              return;
+          }
+          if (!file) {
+              setClassManagerMessage("Choisissez un fichier CSV Pronote.", true);
+              return;
+          }
+
+          try {
+              if (importClassBtn) importClassBtn.disabled = true;
+              setClassManagerMessage(`1/3 Lecture du fichier : ${file.name}`, false);
+              const csvText = await withTimeout(readSelectedFile(file), 8000, "Lecture du fichier trop longue.");
+
+              setClassManagerMessage("2/3 Analyse du CSV...", false);
+              const students = parsePronoteCSV(csvText);
+              if (!students.length) throw new Error("Aucun élève détecté dans le CSV.");
+
+              const classId = slugify(className);
+              const studentsObject = {};
+              students.forEach(function(student) {
+                  const studentId = student.id || slugify(student.nomComplet);
+                  studentsObject[studentId] = {
+                      nom: student.nom || "",
+                      prenom: student.prenom || "",
+                      nomComplet: student.nomComplet || ""
+                  };
+              });
+
+              setClassManagerMessage(`3/3 Écriture Firebase (${students.length} élèves)...`, false);
+              await withTimeout(rdb.ref(`classes/${classId}`).update({
+                  className: className,
+                  active: true,
+                  updatedAt: Date.now(),
+                  students: studentsObject
+              }), 10000, "Écriture Firebase trop longue ou bloquée.");
+
+              classNameInput.value = "";
+              classFileInput.value = "";
+              if (classFileName) classFileName.textContent = "Aucun fichier sélectionné";
+
+              const optionTargets = [classeSelect, classDeleteSelect, profClasseFilter];
+              currentClassMap[classId] = { id: classId, className: className, active: true, students: studentsObject };
+              optionTargets.forEach(function(selectEl, index) {
+                  if (!selectEl) return;
+                  const exists = Array.from(selectEl.options).some(opt => opt.value === classId);
+                  if (!exists) {
+                      const option = document.createElement("option");
+                      option.value = classId;
+                      option.textContent = className;
+                      selectEl.appendChild(option);
+                  }
+                  if (index === 0) selectEl.value = classId;
+              });
+
+              currentStudentMap = studentsObject;
+              eleveSelect.innerHTML = '<option value="">-- Élève --</option>';
+              Object.keys(studentsObject).sort(function(a, b) {
+                  return (studentsObject[a].nomComplet || a).localeCompare((studentsObject[b].nomComplet || b), "fr");
+              }).forEach(function(studentId) {
+                  const option = document.createElement("option");
+                  option.value = studentId;
+                  option.textContent = studentsObject[studentId].nomComplet || studentId;
+                  eleveSelect.appendChild(option);
+              });
+
+              setClassManagerMessage(`${students.length} élève(s) importé(s) dans ${className}.`, false);
+          } catch (error) {
+              console.error(error);
+              setClassManagerMessage(error.message || "Erreur pendant l'import.", true);
+              alert(error.message || "Erreur pendant l'import du CSV.");
+          } finally {
+              if (importClassBtn) importClassBtn.disabled = false;
+          }
+      }
+
+      async function deleteClassOnline() {
+          const classId = classDeleteSelect.value;
+          if (!classId) {
+              setClassManagerMessage("Choisissez une classe à supprimer.", true);
+              return;
+          }
+          const className = currentClassMap[classId] ? (currentClassMap[classId].className || classId) : classId;
+          if (!confirm(`Supprimer la classe "${className}" et sa liste d'élèves en ligne ?`)) return;
+
+          try {
+              await rdb.ref(`classes/${classId}`).remove();
+              setClassManagerMessage(`Classe ${className} supprimée.`, false);
+              await loadClasses();
+          } catch (error) {
+              console.error(error);
+              setClassManagerMessage("Suppression impossible.", true);
+          }
+      }
+
+      async function loadLessonHistory() {
+          try {
+              const selected = lessonHistorySelect.value || currentTeacherLessonId || currentActiveLessonId;
+              const snap = await rdb.ref("lessons").once("value");
+              const raw = snap.val() || {};
+              const lessons = Object.keys(raw).map(function(id) {
+                  return Object.assign({ id: id }, raw[id]);
+              }).sort(function(a, b) {
+                  return (b.startedAt || 0) - (a.startedAt || 0);
+              });
+
+              lessonHistorySelect.innerHTML = '<option value="">-- Historique des leçons --</option>';
+              lessons.forEach(function(item) {
+                  const option = document.createElement("option");
+                  option.value = item.id;
+                  option.textContent = formatLessonOption(item);
+                  lessonHistorySelect.appendChild(option);
+              });
+
+              if (selected && lessons.some(item => item.id === selected)) {
+                  lessonHistorySelect.value = selected;
+                  currentTeacherLessonId = selected;
+              } else if (currentActiveLessonId && lessons.some(item => item.id === currentActiveLessonId)) {
+                  lessonHistorySelect.value = currentActiveLessonId;
+                  currentTeacherLessonId = currentActiveLessonId;
+              }
+          } catch (error) {
+              console.error(error);
+              setLessonManagerMessage("Impossible de charger l'historique.", true);
+          }
+      }
+
+      async function createLesson() {
+          const name = (lessonInput.value || "").trim() || "Séance";
+          try {
+              if (currentActiveLessonId) {
+                  await rdb.ref(`lessons/${currentActiveLessonId}`).update({ status: "closed", closedAt: Date.now() });
+              }
+              const lessonId = `lesson_${Date.now()}`;
+              await rdb.ref(`lessons/${lessonId}`).set({
+                  name: name,
+                  status: "active",
+                  startedAt: Date.now(),
+                  closedAt: null
+              });
+              await rdb.ref("config/active").set({ lessonId: lessonId, name: name });
+              lessonInput.value = "";
+              currentTeacherLessonId = lessonId;
+              setLessonManagerMessage(`Leçon "${name}" ouverte.`, false);
+              await loadLessonHistory();
+          } catch (error) {
+              console.error(error);
+              setLessonManagerMessage("Impossible d'ouvrir la leçon.", true);
+          }
+      }
+
+      async function closeActiveLesson() {
+          if (!currentActiveLessonId) {
+              setLessonManagerMessage("Aucune leçon active à fermer.", true);
+              return;
+          }
+          try {
+              await rdb.ref(`lessons/${currentActiveLessonId}`).update({ status: "closed", closedAt: Date.now() });
+              await rdb.ref("config/active").remove();
+              currentTeacherLessonId = currentActiveLessonId;
+              setLessonManagerMessage("Leçon fermée.", false);
+              await loadLessonHistory();
+          } catch (error) {
+              console.error(error);
+              setLessonManagerMessage("Impossible de fermer la leçon.", true);
+          }
+      }
+
+      async function reopenSelectedLesson() {
+          const lessonId = lessonHistorySelect.value;
+          if (!lessonId) {
+              setLessonManagerMessage("Choisissez une leçon dans l'historique.", true);
+              return;
+          }
+          try {
+              const snap = await rdb.ref(`lessons/${lessonId}`).once("value");
+              const lessonData = snap.val();
+              if (!lessonData) {
+                  setLessonManagerMessage("Leçon introuvable.", true);
+                  return;
+              }
+              if (currentActiveLessonId && currentActiveLessonId !== lessonId) {
+                  await rdb.ref(`lessons/${currentActiveLessonId}`).update({ status: "closed", closedAt: Date.now() });
+              }
+              await rdb.ref(`lessons/${lessonId}`).update({ status: "active", reopenedAt: Date.now(), closedAt: null });
+              await rdb.ref("config/active").set({ lessonId: lessonId, name: lessonData.name || lessonId });
+              currentTeacherLessonId = lessonId;
+              setLessonManagerMessage(`Leçon "${lessonData.name || lessonId}" rouverte.`, false);
+              await loadLessonHistory();
+          } catch (error) {
+              console.error(error);
+              setLessonManagerMessage("Impossible de rouvrir la leçon.", true);
+          }
+      }
+
+      function initTableauStatique() {
+          const b = document.getElementById("table-body");
+          b.innerHTML = "";
+          LISTE_ATELIERS.forEach(function(at) {
+              const d = Object.values(dataEleve).find(function(item) { return item.at === at.n; });
+              if (d) {
+                  b.innerHTML += `<tr class="completed"><td><span class="badge badge-active badge-${at.z}">${at.z}</span></td><td><b>${at.n}</b></td><td>${escapeHtml(d.ex)}</td><td>${escapeHtml(d.ser)}</td><td>${escapeHtml(d.rm)}</td><td style="color:var(--haut)">${escapeHtml(d.p)}</td><td>${escapeHtml(d.res)}</td></tr>`;
+              } else {
+                  b.innerHTML += `<tr><td><span class="badge badge-${at.z}">${at.z}</span></td><td><b>${at.n}</b></td><td colspan="5" style="opacity:0.2">...</td></tr>`;
+              }
+          });
+      }
+
+      async function connexion() {
+          const classId = classeSelect.value;
+          const studentId = eleveSelect.value;
+          if (!currentActiveLessonId) {
+              setStudentMessage("Aucune séance n'est ouverte. Le professeur doit lancer une leçon.", true);
+              return;
+          }
+          if (!classId || !studentId || !currentClassMap[classId] || !currentStudentMap[studentId]) {
+              setStudentMessage("Sélectionnez une classe et un élève.", true);
+              return;
+          }
+
+          const className = currentClassMap[classId].className || classId;
+          const student = currentStudentMap[studentId];
+          user = `${classId}__${studentId}`;
+          currentStudentMeta = {
+              classId: classId,
+              className: className,
+              studentId: studentId,
+              studentName: student.nomComplet || studentId,
+              lessonId: currentActiveLessonId,
+              lessonName: currentLessonName
+          };
+
+          authScreen.classList.add("hidden");
+          appEleve.classList.remove("hidden");
+          document.getElementById("user-info").innerText = `${className} • ${student.nomComplet || studentId}`;
+          setStudentMessage("", false);
+          dataEleve = {};
+          initTableauStatique();
+
+          await rdb.ref(`data/${currentActiveLessonId}/${user}/meta`).set(currentStudentMeta);
+
+          if (studentAteliersRef) studentAteliersRef.off();
+          studentAteliersRef = rdb.ref(`data/${currentActiveLessonId}/${user}/ateliers`);
+          studentAteliersRef.on("value", function(snap) {
+              dataEleve = snap.exists() ? snap.val() : {};
+              initTableauStatique();
+          });
+      }
+
+      function majExercices() {
+          const at = document.getElementById("atelier").value;
+          const exSel = document.getElementById("exercice");
+          if (!at) return;
+          exSel.innerHTML = '<option value="">-- Exercice --</option>' + EXERCICES[at].list.map(function(e) {
+              return `<option value="${e}">${e}</option>`;
+          }).join("");
+          exSel.classList.remove("hidden");
+          document.getElementById("fields-zone").classList.remove("hidden");
+      }
+
+      function majUI() {
+          const ex = document.getElementById("exercice").value;
+          document.getElementById("f-std").className = (!ALT_EXOS.includes(ex) && !ELASTIQUE_EXOS.includes(ex)) ? "" : "hidden";
+          document.getElementById("f-alt").className = ALT_EXOS.includes(ex) ? "" : "hidden";
+          document.getElementById("f-elastique").className = ELASTIQUE_EXOS.includes(ex) ? "" : "hidden";
+      }
+
+      function selectElastique(c) {
+          document.getElementById("val-elastique").value = c;
+          ["Vert","Rouge","Noir"].forEach(function(col) {
+              document.getElementById("el-" + col).style.boxShadow = "none";
+          });
+          document.getElementById("el-" + c).style.boxShadow = "0 0 0 3px #fff";
+      }
+
+      function sauverSérie() {
+          const at = document.getElementById("atelier").value;
+          const ex = document.getElementById("exercice").value;
+          const res = document.getElementById("ressenti").value;
+          const ser = document.getElementById("series").value;
+          if (!at || !ex || !ser || !currentActiveLessonId || !user) return;
+
+          let p = "";
+          let rmLabel = "";
+          if (ELASTIQUE_EXOS.includes(ex)) {
+              p = `(${document.getElementById("val-elastique").value || '?'}) ${document.getElementById("reps-el").value}r`;
+              rmLabel = "Élastique";
+          } else if (ALT_EXOS.includes(ex)) {
+              p = `${document.getElementById("val-alt").value} reps`;
+              rmLabel = "Endurance";
+          } else {
+              const poids = parseFloat(document.getElementById("kg").value);
+              const repetitions = parseInt(document.getElementById("reps").value, 10);
+              p = `${isNaN(poids) ? 'PDC' : poids + 'kg'} / ${repetitions}r`;
+              if (!isNaN(poids) && !isNaN(repetitions)) {
+                  const oneRM = Math.round(poids / (1.0278 - (0.0278 * repetitions)));
+                  rmLabel = oneRM + " kg (Max)";
+              } else {
+                  rmLabel = "PDC";
+              }
+          }
+
+          const zone = LISTE_ATELIERS.find(function(a) { return a.n === at; }).z;
+          dataEleve[ex] = { at: at, z: zone, ex: ex, ser: ser, p: p, res: res, rm: rmLabel };
+
+          rdb.ref(`data/${currentActiveLessonId}/${user}/ateliers`).set(dataEleve);
+          rdb.ref(`data/${currentActiveLessonId}/${user}/meta`).update(currentStudentMeta || {});
+          rdb.ref("live").push({
+              u: (currentStudentMeta ? `${currentStudentMeta.className} ${currentStudentMeta.studentName}` : user).trim(),
+              lessonId: currentActiveLessonId,
+              lessonName: currentLessonName,
+              t: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+          });
+
+          document.getElementById("reps").value = "";
+          document.getElementById("val-alt").value = "";
+          document.getElementById("reps-el").value = "";
+          document.getElementById("kg").value = "PDC";
+          document.getElementById("series").value = "";
+          document.getElementById("ressenti").value = "(=) Efficace";
+          document.getElementById("atelier").value = "";
+          document.getElementById("exercice").classList.add("hidden");
+          document.getElementById("fields-zone").classList.add("hidden");
+      }
+
+      function ouvrirBilanFinal() {
+          document.getElementById("modal-overlay").classList.remove("hidden");
+          const ctx = document.getElementById("radarChart").getContext("2d");
+          const vals = ["haut","bas","tronc","cardio"].map(function(z) {
+              return Object.values(dataEleve).filter(function(d) { return d.z === z; }).length;
+          });
+          if (radarChartInstance) radarChartInstance.destroy();
+          radarChartInstance = new Chart(ctx, {
+              type: "radar",
+              data: {
+                  labels: ["HAUT", "BAS", "TRONC", "CARDIO"],
+                  datasets: [{ data: vals, backgroundColor: "rgba(0, 230, 118, 0.2)", borderColor: "#00e676", pointBackgroundColor: "#00e676" }]
+              },
+              options: { scales: { r: { min: 0, max: 4, ticks: { display: false } } }, plugins: { legend: { display: false } } }
+          });
+      }
+
+      function finaliserSeance() {
+          if (!currentActiveLessonId || !user) return;
+          rdb.ref(`data/${currentActiveLessonId}/${user}/bilan`).set(document.getElementById("bilan-texte").value).then(function() {
+              location.reload();
+          });
+      }
+
+      function openProfDirect() {
+          try {
+              appProf.classList.remove("hidden");
+              authScreen.classList.add("hidden");
+              appEleve.classList.add("hidden");
+              startLiveFeed();
+              setLessonManagerMessage("Console professeur ouverte.", false);
+              loadClasses().catch(console.error);
+              loadLessonHistory().catch(console.error);
+          } catch (error) {
+              console.error(error);
+              alert("Erreur lors de l'ouverture du mode professeur.");
+          }
+      }
+
+
+
+      function startLiveFeed() {
+          if (liveListenerAttached) return;
+          liveListenerAttached = true;
+          rdb.ref("live").limitToLast(20).on("child_added", function(snap) {
+              const d = snap.val() || {};
+              const div = document.createElement("div");
+              div.innerHTML = `> ${escapeHtml(d.t || "--:--")} - <b>${escapeHtml(d.u || "Élève")}</b>`;
+              liveFeed.prepend(div);
+          });
+      }
+
+      function imprimerLivretClasse() {
+          const classId = profClasseFilter.value;
+          const lessonId = getSelectedLessonId();
+          if (!classId) {
+              setLessonManagerMessage("Choisissez une classe à imprimer.", true);
+              return;
+          }
+          if (!lessonId) {
+              setLessonManagerMessage("Choisissez une leçon dans l'historique ou ouvrez-en une.", true);
+              return;
+          }
+
+          rdb.ref(`data/${lessonId}`).once("value", function(snap) {
+              const allData = snap.val() || {};
+              const entries = Object.keys(allData).map(function(id) {
+                  return Object.assign({ id: id }, allData[id]);
+              }).filter(function(item) {
+                  return item.meta && item.meta.classId === classId;
+              }).sort(function(a, b) {
+                  return (a.meta.studentName || "").localeCompare((b.meta.studentName || ""), "fr");
+              });
+
+              if (entries.length === 0) {
+                  setLessonManagerMessage("Aucun résultat pour cette classe sur la leçon sélectionnée.", true);
+                  return;
+              }
+
+              let html = "";
+              entries.forEach(function(item) {
+                  html += `<div class="page-eleve"><h2>BILAN EPS : ${escapeHtml(item.meta.className)} ${escapeHtml(item.meta.studentName)}</h2><table><thead><tr><th>Atelier</th><th>Exo</th><th>Séries</th><th>RM Max Est.</th><th>Perf</th><th>Avis</th></tr></thead><tbody>`;
+                  if (item.ateliers) {
+                      Object.values(item.ateliers).forEach(function(a) {
+                          html += `<tr><td>${escapeHtml(a.at)}</td><td>${escapeHtml(a.ex)}</td><td>${escapeHtml(a.ser)}</td><td>${escapeHtml(a.rm)}</td><td>${escapeHtml(a.p)}</td><td>${escapeHtml(a.res)}</td></tr>`;
+                      });
+                  }
+                  html += `</tbody></table><p><b>Commentaire :</b> ${escapeHtml(item.bilan || 'N/A')}</p></div>`;
+              });
+
+              document.getElementById("print-zone").innerHTML = html;
+              window.print();
+          });
+      }
+
+      function nettoyerClasse() {
+          const classId = profClasseFilter.value;
+          const lessonId = getSelectedLessonId();
+          if (!classId || !lessonId) {
+              setLessonManagerMessage("Choisissez une classe et une leçon.", true);
+              return;
+          }
+          const className = currentClassMap[classId] ? (currentClassMap[classId].className || classId) : classId;
+          if (!confirm(`Purger les résultats de ${className} pour cette leçon ?`)) return;
+
+          rdb.ref(`data/${lessonId}`).once("value", function(snap) {
+              const items = snap.val() || {};
+              const removals = [];
+              Object.keys(items).forEach(function(id) {
+                  const item = items[id] || {};
+                  if (item.meta && item.meta.classId === classId) {
+                      removals.push(rdb.ref(`data/${lessonId}/${id}`).remove());
+                  }
+              });
+              Promise.all(removals).then(function() {
+                  setLessonManagerMessage(`Résultats de ${className} supprimés pour la leçon sélectionnée.`, false);
+              }).catch(function(error) {
+                  console.error(error);
+                  setLessonManagerMessage("Purge impossible.", true);
+              });
+          });
+      }
+
+      if (classFileInput) {
+          classFileInput.addEventListener("change", function() {
+              const file = classFileInput.files && classFileInput.files[0];
+              if (classFileName) classFileName.textContent = file ? `Fichier : ${file.name}` : "Aucun fichier sélectionné";
+          });
+      }
+
+      lessonHistorySelect.addEventListener("change", function() {
+          currentTeacherLessonId = lessonHistorySelect.value;
+      });
+      classeSelect.addEventListener("change", loadStudentsForSelectedClass);
+
+      rdb.ref("config/active").on("value", function(snap) {
+          const d = snap.val();
+          if (d && d.lessonId) {
+              currentActiveLessonId = d.lessonId;
+              currentLessonName = d.name || d.lessonId;
+              currentTeacherLessonId = currentTeacherLessonId || currentActiveLessonId;
+              lessonBanner.classList.remove("hidden");
+              curLessonNameEl.innerText = currentLessonName;
+              studentLessonInfo.textContent = `Séance active : ${currentLessonName}`;
+              studentLessonInfo.style.color = "#9be7ff";
+              if (!lessonInput.value) lessonInput.value = currentLessonName;
+              loadLessonHistory();
+          } else {
+              currentActiveLessonId = "";
+              currentLessonName = "";
+              lessonBanner.classList.add("hidden");
+              studentLessonInfo.textContent = "Aucune séance active pour le moment.";
+              studentLessonInfo.style.color = "#ff8a80";
+          }
+      });
+
+      async function init() {
+          await loadClasses();
+          await loadLessonHistory();
+          }
+      init();
+    </script>
+  </body>
 </html>
