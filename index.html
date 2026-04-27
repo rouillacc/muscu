@@ -147,6 +147,7 @@
               <option>Abdominaux</option>
               <option>Obliques</option>
               <option>Grand Dorsal</option>
+              <option>Gainage</option>
             </optgroup>
             <optgroup label="❤️ CARDIO" data-zone="cardio">
               <option>Jumping Jack</option>
@@ -429,7 +430,7 @@
       const LISTE_ATELIERS = [
           { n: "Pectoraux", z: "haut" }, { n: "Biceps", z: "haut" }, { n: "Triceps", z: "haut" }, { n: "Trapèzes", z: "haut" },
           { n: "Quadriceps", z: "bas" }, { n: "Ischios", z: "bas" }, { n: "Fessiers", z: "bas" }, { n: "Mollets", z: "bas" },
-          { n: "Abdominaux", z: "tronc" }, { n: "Obliques", z: "tronc" }, { n: "Grand Dorsal", z: "tronc" },
+          { n: "Abdominaux", z: "tronc" }, { n: "Obliques", z: "tronc" }, { n: "Grand Dorsal", z: "tronc" }, { n: "Gainage", z: "tronc" },
           { n: "Jumping Jack", z: "cardio" }, { n: "Mountain Climber", z: "cardio" }, { n: "Burpees", z: "cardio" }
       ];
 
@@ -445,12 +446,13 @@
           "Abdominaux": { list:["Crunchs","Sit-Up","Hollow"] },
           "Obliques": { list:["Russian Twist","Touche Talons","Crunch Pédalos"] },
           "Grand Dorsal": { list:["Arlaud","Arlaud Dynamique","Rameur Élastique"] },
+          "Gainage": { list:["Gainage Statique","Gainage Dynamique","Gainage Étoile"] },
           "Jumping Jack": { list:["Jumping Jack","Star Jump","Corde à Sauter"] },
           "Mountain Climber": { list:["Mountain Climber Bloqué","Mountain Climber Dynamique","Mountain Climber Crossfit"] },
           "Burpees": { list:["Marche de l'Ours","Sprawl","Burpees"] }
       };
 
-      const ALT_EXOS = ["Crunchs","Sit-Up","Hollow","Russian Twist","Touche Talons","Crunch Pédalos","Arlaud","Arlaud Dynamique","Chaise","Jumping Jack","Star Jump","Corde à Sauter","Mountain Climber Bloqué","Mountain Climber Dynamique","Mountain Climber Crossfit","Marche de l'Ours","Sprawl","Burpees","Squats Sautés","Montées Descentes"];
+      const ALT_EXOS = ["Crunchs","Sit-Up","Hollow","Russian Twist","Touche Talons","Crunch Pédalos","Arlaud","Arlaud Dynamique","Chaise","Jumping Jack","Star Jump","Corde à Sauter","Mountain Climber Bloqué","Mountain Climber Dynamique","Mountain Climber Crossfit","Marche de l'Ours","Sprawl","Burpees","Squats Sautés","Montées Descentes","Gainage Statique","Gainage Dynamique","Gainage Étoile"];
       const ELASTIQUE_EXOS = ["Dips","Tirage Bras Tendus","Rameur Élastique"];
 
       const classeSelect = document.getElementById("classe");
