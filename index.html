@@ -30,7 +30,14 @@
       select, input, textarea { width: 100%; padding: 12px; margin: 5px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--surface2); color: #fff; font-size: 16px; }
       button { width: 100%; padding: 15px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; }
       .btn-primary { background: var(--haut); color: #000; }
-      .btn-prof { background: var(--prof); color: #fff; }
+      btnProf.addEventListener("click", () => {
+    const code = prompt("Veuillez saisir le code d'accès Professeur :");
+    if (code === "16170") {
+        showScreen(appProf);
+    } else {
+        alert("Code incorrect. Accès refusé.");
+    }
+});
       .btn-danger { background: var(--bas); color: #fff; }
       .goals-banner { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
       .goal-item { padding: 10px 5px; border-radius: 12px; color: #000; text-align: center; }
