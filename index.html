@@ -33,16 +33,19 @@
       // 1. On récupère l'élément du bouton
 const btnProf = document.getElementById('btn-prof'); // ou 'btn-prof-access' selon votre ID
 
-// 2. On ajoute l'écouteur d'événement avec la condition
-btnProf.addEventListener("click", () => {
-    const saisie = prompt("Accès réservé. Veuillez saisir le code Professeur :");
-    
-    if (saisie === "16170") {
-        showScreen(appProf); // Affiche l'onglet prof si le code est bon
-    } else if (saisie !== null) {
-        alert("Code incorrect !"); // Alerte si le code est mauvais (et que l'utilisateur n'a pas fait 'Annuler')
-    }
-});
+// Correction de l'accès direct Professeur
+if (profDirectBtn) {
+    profDirectBtn.onclick = function() {
+        const password = prompt("Accès sécurisé - Entrez le code Professeur :");
+        
+        if (password === "16170") {
+            showScreen(appProf);
+            loadLessonHistory(); // Charge les données pour la gestion
+        } else if (password !== null) {
+            alert("Code incorrect ! Accès refusé.");
+        }
+    };
+}
       .btn-danger { background: var(--bas); color: #fff; }
       .goals-banner { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
       .goal-item { padding: 10px 5px; border-radius: 12px; color: #000; text-align: center; }
