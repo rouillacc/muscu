@@ -62,70 +62,70 @@ btnProf.addEventListener("click", () => {
       .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
       .modal-box { background: #fff; color: #000; width: 100%; border-radius: 20px; padding: 20px; max-height: 90vh; overflow-y: auto; }
       .row { display: flex; gap: 6px; margin-bottom: 5px; } .row > * { flex: 1; }
-     @media print {
-    /* Cache les éléments inutiles à l'impression */
+   @media print {
+    /* Indispensable pour imprimer les couleurs de fond */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+
     .no-print, .banner, .btn-home, #auth-screen, #app-eleve > .card:first-of-type, .btn-prof, #prof-direct-btn {
         display: none !important;
     }
 
-    /* Force le rendu en noir et blanc lisible */
-    body {
-        background: white !important;
-        color: black !important;
-        margin: 0;
-        padding: 0;
-    }
-
     #print-zone {
         display: block !important;
+        background: white !important;
+        color: black !important;
     }
 
     .page-eleve {
         page-break-after: always;
-        color: black !important;
         padding: 20px;
-        font-family: Arial, sans-serif;
+        font-family: 'DM Sans', Arial, sans-serif;
     }
 
-    /* Optimisation des tableaux pour le papier */
+    h2 {
+        border-bottom: 2px solid #333;
+        padding-bottom: 10px;
+        color: black !important;
+    }
+
     table {
         width: 100%;
         border: 2px solid black !important;
         border-collapse: collapse;
         margin-top: 15px;
-        background-color: white !important;
     }
 
     th {
-        background-color: #f2f2f2 !important; /* Gris très clair pour les entêtes */
-        color: black !important;
+        background-color: #f2f2f2 !important;
         border: 1px solid black !important;
-        font-size: 11px !important;
         padding: 8px;
-        text-transform: uppercase;
+        font-size: 11px !important;
     }
 
     td {
         border: 1px solid black !important;
         padding: 8px;
-        color: black !important;
         font-size: 11px !important;
         text-align: center;
     }
 
-    /* Force la visibilité des badges même en impression */
-    .badge {
-        border: 1px solid black !important;
-        opacity: 1 !important;
-        color: black !important;
-        background: transparent !important;
-    }
+    /* Couleurs par zone pour l'impression */
+    .print-haut { background-color: #00e676 !important; color: black !important; font-weight: bold; }
+    .print-bas { background-color: #ff1744 !important; color: white !important; font-weight: bold; }
+    .print-tronc { background-color: #ffd740 !important; color: black !important; font-weight: bold; }
+    .print-cardio { background-color: #40c4ff !important; color: black !important; font-weight: bold; }
 
-    h3, h4 {
-        color: black !important;
-        border-bottom: 1px solid black;
-        margin-bottom: 10px;
+    .comment-box {
+        margin-top: 15px;
+        padding: 10px;
+        border-left: 5px solid #ccc;
+        font-style: italic;
     }
+}
 }
     </style>
   </head>
@@ -1201,48 +1201,80 @@ btnProf.addEventListener("click", () => {
           });
       }
 
-      function imprimerLivretClasse() {
-          const classId = profClasseFilter.value;
-          const lessonId = getSelectedLessonId();
-          if (!classId) {
-              setLessonManagerMessage("Choisissez une classe à imprimer.", true);
-              return;
-          }
-          if (!lessonId) {
-              setLessonManagerMessage("Choisissez une leçon dans l'historique ou ouvrez-en une.", true);
-              return;
-          }
+function imprimerLivretClasse() {
+    const classId = profClasseFilter.value;
+    const lessonId = getSelectedLessonId();
+    if (!classId) {
+        setLessonManagerMessage("Choisissez une classe à imprimer.", true);
+        return;
+    }
+    if (!lessonId) {
+        setLessonManagerMessage("Choisissez une leçon.", true);
+        return;
+    }
 
-          rdb.ref(`data/${lessonId}`).once("value", function(snap) {
-              const allData = snap.val() || {};
-              const entries = Object.keys(allData).map(function(id) {
-                  return Object.assign({ id: id }, allData[id]);
-              }).filter(function(item) {
-                  return item.meta && item.meta.classId === classId;
-              }).sort(function(a, b) {
-                  return (a.meta.studentName || "").localeCompare((b.meta.studentName || ""), "fr");
-              });
+    rdb.ref(`data/${lessonId}`).once("value", function(snap) {
+        const allData = snap.val() || {};
+        const entries = Object.keys(allData).map(function(id) {
+            return Object.assign({ id: id }, allData[id]);
+        }).filter(function(item) {
+            return item.meta && item.meta.classId === classId;
+        }).sort(function(a, b) {
+            return (a.meta.studentName || "").localeCompare((b.meta.studentName || ""), "fr");
+        });
 
-              if (entries.length === 0) {
-                  setLessonManagerMessage("Aucun résultat pour cette classe sur la leçon sélectionnée.", true);
-                  return;
-              }
+        if (entries.length === 0) {
+            setLessonManagerMessage("Aucun résultat pour cette classe.", true);
+            return;
+        }
 
-              let html = "";
-              entries.forEach(function(item) {
-                  html += `<div class="page-eleve"><h2>BILAN EPS : ${escapeHtml(item.meta.className)} ${escapeHtml(item.meta.studentName)}</h2><table><thead><tr><th>Atelier</th><th>Exo</th><th>Séries</th><th>RM Max Est.</th><th>Perf</th><th>Avis</th></tr></thead><tbody>`;
-                  if (item.ateliers) {
-                      Object.values(item.ateliers).forEach(function(a) {
-                          html += `<tr><td>${escapeHtml(a.at)}</td><td>${escapeHtml(a.ex)}</td><td>${escapeHtml(a.ser)}</td><td>${escapeHtml(a.rm)}</td><td>${escapeHtml(a.p)}</td><td>${escapeHtml(a.res)}</td></tr>`;
-                      });
-                  }
-                  html += `</tbody></table><p><b>Commentaire :</b> ${escapeHtml(item.bilan || 'N/A')}</p></div>`;
-              });
+        let html = "";
+        entries.forEach(function(item) {
+            html += `<div class="page-eleve">
+                <h2>BILAN EPS : ${escapeHtml(item.meta.className)} - ${escapeHtml(item.meta.studentName)}</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Atelier</th>
+                            <th>Exercice</th>
+                            <th>Séries</th>
+                            <th>Max Est.</th>
+                            <th>Performance</th>
+                            <th>Avis</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            
+            if (item.ateliers) {
+                Object.values(item.ateliers).forEach(function(a) {
+                    // Déterminer la classe de couleur selon la zone (z)
+                    let colorClass = "";
+                    const zone = (a.z || "").toLowerCase();
+                    if (zone.includes("haut")) colorClass = "print-haut";
+                    else if (zone.includes("bas")) colorClass = "print-bas";
+                    else if (zone.includes("tronc")) colorClass = "print-tronc";
+                    else if (zone.includes("cardio")) colorClass = "print-cardio";
 
-              document.getElementById("print-zone").innerHTML = html;
-              window.print();
-          });
-      }
+                    html += `<tr class="${colorClass}">
+                        <td>${escapeHtml(a.at)}</td>
+                        <td>${escapeHtml(a.ex)}</td>
+                        <td>${escapeHtml(a.ser)}</td>
+                        <td>${escapeHtml(a.rm)}</td>
+                        <td>${escapeHtml(a.p)}</td>
+                        <td>${escapeHtml(a.res)}</td>
+                    </tr>`;
+                });
+            }
+            
+            html += `</tbody></table>
+                <div class="comment-box"><b>Bilan de l'élève :</b> ${escapeHtml(item.bilan || 'Pas de conclusion rédigée.')}</div>
+            </div>`;
+        });
+
+        document.getElementById("print-zone").innerHTML = html;
+        window.print();
+    });
+}
 
       function nettoyerClasse() {
           const classId = profClasseFilter.value;
