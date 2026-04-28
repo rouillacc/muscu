@@ -30,12 +30,17 @@
       select, input, textarea { width: 100%; padding: 12px; margin: 5px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--surface2); color: #fff; font-size: 16px; }
       button { width: 100%; padding: 15px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; }
       .btn-primary { background: var(--haut); color: #000; }
-      btnProf.addEventListener("click", () => {
-    const code = prompt("Veuillez saisir le code d'accès Professeur :");
-    if (code === "16170") {
-        showScreen(appProf);
-    } else {
-        alert("Code incorrect. Accès refusé.");
+      // 1. On récupère l'élément du bouton
+const btnProf = document.getElementById('btn-prof'); // ou 'btn-prof-access' selon votre ID
+
+// 2. On ajoute l'écouteur d'événement avec la condition
+btnProf.addEventListener("click", () => {
+    const saisie = prompt("Accès réservé. Veuillez saisir le code Professeur :");
+    
+    if (saisie === "16170") {
+        showScreen(appProf); // Affiche l'onglet prof si le code est bon
+    } else if (saisie !== null) {
+        alert("Code incorrect !"); // Alerte si le code est mauvais (et que l'utilisateur n'a pas fait 'Annuler')
     }
 });
       .btn-danger { background: var(--bas); color: #fff; }
