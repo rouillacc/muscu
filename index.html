@@ -451,7 +451,7 @@ if (profDirectBtn) {
         <button
           id="prof-direct-btn"
           style="display:block; margin:10px auto 0 auto; background:#00e676; color:#000; font-size:11px; padding:10px 14px; border-radius:10px; width:auto;"
-          onclick="openProfDirect()"
+          onclick="verifierAccesProf()"
         >
           OUVRIR CONSOLE PROF (DIRECT)
         </button>
@@ -1351,6 +1351,21 @@ function imprimerLivretClasse() {
           await loadLessonHistory();
           }
       init();
-    </script>
+    
+function verifierAccesProf() {
+    const saisie = prompt("Accès réservé aux enseignants, entrez le code :");
+    if (saisie === "16170") {
+        authScreen.classList.add('hidden');
+        appEleve.classList.add('hidden');
+        appProf.classList.remove('hidden');
+        startLiveFeed();
+        loadClasses().catch(console.error);
+        loadLessonHistory().catch(console.error);
+    } else if (saisie !== null) {
+        alert("Code erroné. Accès refusé.");
+    }
+}
+
+</script>
   </body>
 </html>
